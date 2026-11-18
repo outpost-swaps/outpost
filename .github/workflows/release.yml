@@ -1,0 +1,430 @@
+# Builds Outpost for Linux, macOS and Windows and attaches the packages to a DRAFT release.
+# Runs on a version tag (v0.1.0, v0.1.0-beta, ...) or by hand (Actions -> Release -> Run workflow;
+# a manual run only uploads the packages as workflow artifacts).
+name: Release
+run-name: "Outpost ${{ github.ref_name }}: build and package"
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x64
+            os: ubuntu-22.04
+          - name: macos-arm64        # Apple silicon (GitHub-hosted macOS arm64 runner)
+            os: macos-15
+          - name: macos-x64          # Intel Macs (the runner label for Intel images changes over time; check it if this job cannot start)
+            os: macos-15-intel
+          - name: windows-x64
+            os: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show compile errors as public annotations
+        shell: bash
+        run: echo "::add-matcher::.github/rust-problem-matcher.json"
+
+      - name: Version from the tag
+        shell: bash
+        run: |
+          ref="${GITHUB_REF_NAME#v}"
+          version="${ref%%-*}"
+          [[ "$version" =~ ^[0-9]+(\.[0-9]+){0,2}$ ]] || version="0.1.0"
+          echo "APP_VERSION=$version" >> "$GITHUB_ENV"
+          echo "Packaging version $version (from $GITHUB_REF_NAME)"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Rust toolchain (from rust-toolchain.toml)
+        shell: bash
+        run: rustup show active-toolchain || rustup toolchain install
+
+      - name: Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          bash scripts/ci/retry.sh sudo apt-get update
+          bash scripts/ci/retry.sh sudo apt-get install -y build-essential pkg-config cmake libssl-dev libsqlite3-dev protobuf-compiler
+
+      - name: macOS build dependencies
+        if: runner.os == 'macOS'
+        run: bash scripts/ci/retry.sh brew install zlib pkg-config cmake protobuf
+
+      - name: Windows build dependencies
+        if: runner.os == 'Windows'
+        run: choco install -y protoc cmake
+
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          ./scripts/package/package-linux.sh
+          tar -C dist -czf "outpost-${APP_VERSION}-${{ matrix.name }}.tar.gz" Outpost
+
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          ./scripts/package/package-macos.sh
+          ditto -c -k --keepParent dist/Outpost.app "outpost-${APP_VERSION}-${{ matrix.name }}.zip"
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call scripts\package\package-windows.bat || exit /b 1
+          powershell -Command "Compress-Archive -Path dist\Outpost -DestinationPath outpost-%APP_VERSION%-${{ matrix.name }}.zip"
+
+      # The packages must contain the native engine. A package without it starts and then crashes, so these steps FAIL the build.
+      - name: Check the Linux package contains the engine
+        if: runner.os == 'Linux'
+        run: python3 scripts/ci/check-package-engine.py dist/Outpost/lib/app/app.jar libatomicswap.so binaries/asb binaries/price_ticker binaries/daemon_pool_proxy
+
+      - name: Check the macOS package contains the engine
+        if: runner.os == 'macOS'
+        run: python3 scripts/ci/check-package-engine.py dist/Outpost.app/Contents/app/app.jar libatomicswap.dylib binaries/asb binaries/price_ticker binaries/daemon_pool_proxy
+
+      - name: Check the macOS app signature
+        if: runner.os == 'macOS'
+        run: |
+          # A broken signature makes macOS call the downloaded app "damaged", so this FAILS the build.
+          codesign --verify --deep --strict --verbose=2 dist/Outpost.app
+          echo "::notice title=macos signature::the app's signature verifies (ad hoc); Gatekeeper says: $(spctl --assess --type execute -vv dist/Outpost.app 2>&1 | head -1 | sed 's#.*Outpost.app: ##')"
+
+      - name: Check the Windows package contains the engine
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python scripts/ci/check-package-engine.py dist/Outpost/app/app.jar atomicswap.dll binaries/asb.exe binaries/price_ticker.exe binaries/daemon_pool_proxy.exe
+
+      # Installers are extra files next to the zip / tar.gz. Each step may fail without failing the release.
+      - name: macOS disk image (dmg)
+        if: runner.os == 'macOS'
+        continue-on-error: true
+        run: |
+          rm -rf dmg-root && mkdir dmg-root
+          cp -R dist/Outpost.app dmg-root/
+          ln -s /Applications dmg-root/Applications
+          hdiutil create -volname "Outpost" -srcfolder dmg-root -ov -format UDZO "outpost-${APP_VERSION}-${{ matrix.name }}.dmg"
+          rm -rf dmg-root
+
+      - name: Windows installer (exe)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: cmd
+        run: |
+          mkdir installers-exe
+          jpackage --type exe --app-image dist\Outpost --name Outpost --app-version %APP_VERSION% --vendor "Outpost" --description "Tor-only BTC/XMR atomic swaps" --win-menu --win-shortcut --win-dir-chooser --dest installers-exe || exit /b 1
+          move installers-exe\*.exe outpost-%APP_VERSION%-${{ matrix.name }}.exe
+
+      - name: Linux installers (deb and rpm)
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          sudo apt-get install -y fakeroot rpm
+          mkdir -p installers
+          # Built straight from the app's files, with the icon. Building from the finished app folder
+          # (--app-image) made jpackage say "app-image dir not generated by jpackage" and ignore the icon.
+          for t in deb rpm; do
+            extra=""
+            # The deb gets its own install/removal scripts that do not fail when the system has no menu folders.
+            if [ "$t" = deb ]; then extra="--resource-dir scripts/package/linux/deb"; fi
+            jpackage --type "$t" $extra \
+              --linux-menu-group "Network;Finance;" \
+              --input app/build/install/app/lib \
+              --main-jar app.jar \
+              --main-class swap.gui.Main \
+              --name Outpost \
+              --linux-package-name outpost \
+              --icon scripts/package/icons/outpost.png \
+              --app-version "$APP_VERSION" \
+              --vendor "Outpost" \
+              --description "Tor-only BTC/XMR atomic swaps" \
+              --linux-shortcut \
+              --dest installers
+          done
+          mv installers/*.deb "outpost-${APP_VERSION}-${{ matrix.name }}.deb"
+          mv installers/*.rpm "outpost-${APP_VERSION}-${{ matrix.name }}.rpm"
+
+      - name: Linux AppImage
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          sudo apt-get install -y squashfs-tools
+          ./scripts/package/linux/build-appimage.sh "outpost-${APP_VERSION}-${{ matrix.name }}.AppImage"
+
+      # Icon checks: informational, they never fail the build. Results show up as notes/errors on the run.
+      - name: Check the app icon (macOS)
+        if: runner.os == 'macOS'
+        continue-on-error: true
+        run: |
+          if cmp -s dist/Outpost.app/Contents/Resources/Outpost.icns scripts/package/icons/Outpost.icns; then
+            echo "::notice title=icon::macOS app icon IS the Outpost icon"
+          else
+            echo "::error title=icon::macOS app icon is NOT the Outpost icon"
+          fi
+
+      - name: Check the Linux installers (menu entry and icon inside the .deb)
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          deb=$(ls outpost-*.deb 2>/dev/null | head -1)
+          if [ -z "$deb" ]; then
+            echo "::warning title=icon::no .deb was built, so the menu icon could not be checked"
+            exit 0
+          fi
+          d=$(mktemp -d)
+          dpkg-deb -x "$deb" "$d"
+          desktop=$(find "$d" -name '*.desktop' | head -1)
+          if [ -n "$desktop" ]; then
+            iconval=$(grep '^Icon=' "$desktop" | head -1 | cut -d= -f2-)
+            echo "::notice title=icon::the .deb has a menu entry: $(basename "$desktop") with Icon=$iconval"
+          else
+            echo "::error title=icon::the .deb has NO .desktop menu entry"
+            iconval=""
+          fi
+          # follow the menu entry's own Icon= path: that exact file must exist inside the package and be our icon
+          case "$iconval" in
+            /*) iconfile="$d$iconval" ;;
+            *)  iconfile=$(find "$d/usr/share/icons" "$d/usr/share/pixmaps" -iname "$iconval.png" 2>/dev/null | head -1) ;;
+          esac
+          if [ -n "$iconval" ] && [ -f "$iconfile" ] && cmp -s "$iconfile" scripts/package/icons/outpost.png; then
+            echo "::notice title=icon::the menu entry's icon file exists in the .deb and IS the Outpost icon"
+          else
+            echo "::error title=icon::the menu entry's icon is missing or is NOT the Outpost icon (Icon=$iconval)"
+          fi
+          # the scripts that dpkg will run on the user's machine (read from the finished package)
+          c=$(mktemp -d); dpkg-deb -e "$deb" "$c"
+          if grep -Eq '^[[:space:]]*xdg-desktop-menu install' "$c/postinst"; then
+            echo "::error title=deb::the post-install script still runs xdg-desktop-menu bare under set -e: the install can fail on minimal systems"
+          else
+            echo "::notice title=deb::the post-install script wraps xdg-desktop-menu, so a missing menu folder cannot fail the install"
+          fi
+          if grep -q 'Categories=Unknown' "$d/opt/outpost/lib/outpost-Outpost.desktop" 2>/dev/null; then
+            echo "::error title=deb::the menu entry still says Categories=Unknown"
+          else
+            echo "::notice title=deb::menu categories: $(grep '^Categories=' "$d/opt/outpost/lib/outpost-Outpost.desktop" 2>/dev/null)"
+          fi
+          tar -tzf outpost-*-linux-x64.tar.gz | grep -E 'install-menu-entry.sh|/Outpost.png|README.txt' | sed 's/^/  tar.gz has: /'
+
+      - name: Check the app icon (Windows)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $ico = [System.Drawing.Icon]::ExtractAssociatedIcon("$PWD\dist\Outpost\Outpost.exe")
+          $c = $ico.ToBitmap().GetPixel(5, 16)
+          if ($c.R -gt 110 -and $c.G -lt 70 -and $c.B -lt 70) {
+            Write-Host "::notice title=icon::Windows app icon IS the Outpost icon (sample pixel $($c.R),$($c.G),$($c.B))"
+          } else {
+            Write-Host "::error title=icon::Windows app icon is NOT the Outpost icon (sample pixel $($c.R),$($c.G),$($c.B))"
+          }
+
+      # More informational checks (they never fail the build): install the packages on the real runner and start the app.
+      - name: Tools for the Linux tests
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: sudo apt-get install -y xvfb imagemagick tesseract-ocr
+
+      - name: Run the AppImage (Linux smoke test)
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          img=$(ls outpost-*.AppImage 2>/dev/null | head -1)
+          if [ -z "$img" ]; then
+            echo "::warning title=smoke::no AppImage was built, so it could not be run"
+            exit 0
+          fi
+          export JAVA_TOOL_OPTIONS="-Dprism.order=sw"
+          state=$(scripts/ci/offline-run.sh xvfb-run -a --server-args="-screen 0 1280x800x24" scripts/ci/smoke-linux.sh screenshots/linux-appimage.png "./$img" --appimage-extract-and-run | tail -n 1)
+          if [ "$state" = "running" ]; then
+            echo "::notice title=smoke::the AppImage started and stayed running for 25 seconds (screenshot saved)"
+            bash scripts/ci/check-screen-text.sh screenshots/linux-appimage.png "linux AppImage" || true
+          else
+            echo "::error title=smoke::the AppImage $state: $(tail -n 5 screenshots/linux-appimage.log | tr '\n' ' ' | cut -c1-300)"
+          fi
+
+      - name: Install and start the .deb (Linux smoke test)
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          deb=$(ls outpost-*.deb 2>/dev/null | head -1)
+          if [ -z "$deb" ]; then
+            echo "::warning title=smoke::no .deb was built, so it could not be installed"
+            exit 0
+          fi
+          if ! sudo apt-get install -y "./$deb"; then
+            echo "::error title=smoke::the .deb did not install"
+            echo "----- the package's post-install script:"; cat /var/lib/dpkg/info/outpost.postinst 2>/dev/null || true
+            exit 0
+          fi
+          if [ ! -x /opt/outpost/bin/Outpost ]; then
+            echo "::error title=smoke::installed, but /opt/outpost/bin/Outpost is not there"
+            exit 0
+          fi
+          echo "::notice title=smoke::the .deb installed (a missing system menu folder no longer stops it)"
+          export JAVA_TOOL_OPTIONS="-Dprism.order=sw"
+          state=$(scripts/ci/offline-run.sh xvfb-run -a --server-args="-screen 0 1280x800x24" scripts/ci/smoke-linux.sh screenshots/linux-deb.png /opt/outpost/bin/Outpost | tail -n 1)
+          if [ "$state" = "running" ]; then
+            echo "::notice title=smoke::the installed Linux app started and stayed running for 25 seconds (screenshot saved)"
+            bash scripts/ci/check-screen-text.sh screenshots/linux-deb.png "linux deb" || true
+          else
+            echo "::error title=smoke::the installed Linux app $state: $(tail -n 5 screenshots/linux-deb.log | tr '\n' ' ' | cut -c1-300)"
+          fi
+          if sudo apt-get remove -y outpost >/dev/null 2>&1 && [ ! -e /opt/outpost/bin/Outpost ]; then
+            echo "::notice title=smoke::the .deb removed cleanly"
+          else
+            echo "::error title=smoke::the .deb did not remove cleanly"
+          fi
+
+      - name: Tesseract for reading the screen (Windows)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: pwsh
+        run: choco install -y tesseract
+
+      - name: Install and start the Windows installers (smoke test)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          function Test-Installed($label) {
+            $exe = Join-Path $env:ProgramFiles "Outpost\Outpost.exe"
+            if (-not (Test-Path $exe)) { Write-Host "::error title=smoke::$label installed, but $exe is not there"; return }
+            Write-Host "::notice title=smoke::$label installed to $exe"
+            $c = [System.Drawing.Icon]::ExtractAssociatedIcon($exe).ToBitmap().GetPixel(5, 16)
+            if ($c.R -gt 110 -and $c.G -lt 70 -and $c.B -lt 70) { Write-Host "::notice title=smoke::$label has the Outpost icon (pixel $($c.R),$($c.G),$($c.B))" } else { Write-Host "::error title=smoke::$label does NOT have the Outpost icon (pixel $($c.R),$($c.G),$($c.B))" }
+            $lnk = Get-ChildItem "$env:ProgramData\Microsoft\Windows\Start Menu\Programs" -Recurse -Filter "Outpost*.lnk" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($lnk) { Write-Host "::notice title=smoke::$label added a Start menu shortcut: $($lnk.Name)" } else { Write-Host "::warning title=smoke::$label added no Start menu shortcut named Outpost" }
+            $app = Start-Process $exe -PassThru
+            Start-Sleep -Seconds 25
+            try {
+              Add-Type -AssemblyName System.Windows.Forms
+              $vs = [System.Windows.Forms.SystemInformation]::VirtualScreen
+              $bmp = New-Object System.Drawing.Bitmap $vs.Width, $vs.Height
+              $g = [System.Drawing.Graphics]::FromImage($bmp)
+              $g.CopyFromScreen($vs.Left, $vs.Top, 0, 0, $bmp.Size)
+              New-Item -ItemType Directory -Force screenshots | Out-Null
+              $bmp.Save((Join-Path $PWD "screenshots\\windows-installed.png"))
+            } catch { Write-Host "::warning title=smoke::the screenshot failed: $($_.Exception.Message)" }
+            $env:Path += ";C:\Program Files\Tesseract-OCR"
+            bash scripts/ci/check-screen-text.sh screenshots/windows-installed.png "windows $label"
+            $app.Refresh()
+            if ($app.MainWindowTitle -eq "Outpost.exe") { Write-Host "::error title=smoke::the app installed by $label is showing an error box (window titled Outpost.exe), so it did NOT start" }
+            if (-not $app.HasExited) { Write-Host "::notice title=smoke::the app installed by $label was still running after 25 seconds (window title: '$($app.MainWindowTitle)')"; Stop-Process -Id $app.Id -Force } else { Write-Host "::error title=smoke::the app installed by $label exited early (code $($app.ExitCode))" }
+          }
+          $inst = Get-ChildItem outpost-*-windows-x64.exe | Select-Object -First 1
+          if ($inst) {
+            $p = Start-Process $inst.FullName -ArgumentList "/quiet /norestart" -PassThru
+            if (-not $p.WaitForExit(240000)) { Stop-Process -Id $p.Id -Force; Write-Host "::error title=smoke::the .exe installer did not finish within 4 minutes" }
+            elseif ($p.ExitCode -ne 0) { Write-Host "::error title=smoke::the .exe installer failed (exit code $($p.ExitCode))" }
+            else { Test-Installed "the .exe installer" }
+          } else { Write-Host "::warning title=smoke::no .exe installer was built" }
+
+      - name: Start the macOS app and read its screen (smoke test)
+        if: runner.os == 'macOS'
+        continue-on-error: true
+        run: |
+          brew install tesseract imagemagick
+          mkdir -p screenshots
+          # no network for the app: everything outside this machine is denied, loopback stays open (its own Tor and helpers use it)
+          PROFILE='(version 1)(allow default)(deny network*)(allow network* (remote ip "localhost:*"))(allow network* (local ip "localhost:*"))(allow network* (remote unix-socket))(allow network* (local unix-socket))(allow process-exec (with no-sandbox) (literal "/bin/ps"))'
+          # /bin/ps is a privileged system tool the Tor library calls; a sandboxed process may not start it, so it alone runs outside
+          sandbox-exec -p "$PROFILE" ./dist/Outpost.app/Contents/MacOS/Outpost > screenshots/macos.log 2>&1 &
+          pid=$!
+          sleep 30
+          if kill -0 "$pid" 2>/dev/null; then
+            echo "::notice title=smoke::the macOS app was still running after 30 seconds"
+          else
+            echo "::error title=smoke::the macOS app exited early. First errors: $(grep -m 6 -E 'Exception|Error|Caused by|Cannot run' screenshots/macos.log | tr '\n' ' ' | cut -c1-500) | Last lines: $(tail -n 3 screenshots/macos.log | tr '\n' ' ' | cut -c1-200)"
+          fi
+          screencapture -x "screenshots/macos-${{ matrix.name }}.png" || echo "::warning title=smoke::the screenshot failed"
+          bash scripts/ci/check-screen-text.sh "screenshots/macos-${{ matrix.name }}.png" "macos ${{ matrix.name }}" || true
+          kill "$pid" 2>/dev/null || true
+
+      - name: Check the dmg (macOS)
+        if: runner.os == 'macOS'
+        continue-on-error: true
+        run: |
+          dmg=$(ls outpost-*.dmg 2>/dev/null | head -1)
+          if [ -z "$dmg" ]; then
+            echo "::warning title=smoke::no .dmg was built"
+            exit 0
+          fi
+          mnt=$(mktemp -d)
+          hdiutil attach -nobrowse -readonly -mountpoint "$mnt" "$dmg" > /dev/null
+          if cmp -s "$mnt/Outpost.app/Contents/Resources/Outpost.icns" scripts/package/icons/Outpost.icns; then
+            echo "::notice title=icon::the app inside the .dmg has the Outpost icon"
+          else
+            echo "::error title=icon::the app inside the .dmg does NOT have the Outpost icon"
+          fi
+          if [ -L "$mnt/Applications" ]; then
+            echo "::notice title=smoke::the .dmg window has the Applications shortcut"
+          else
+            echo "::warning title=smoke::the .dmg has no Applications shortcut"
+          fi
+          hdiutil detach "$mnt" -quiet
+
+      - name: Checksums
+        shell: bash
+        run: |
+          for f in outpost-*; do
+            if command -v sha256sum >/dev/null; then sha256sum "$f"; else shasum -a 256 "$f"; fi
+          done > "SHA256SUMS-${{ matrix.name }}.txt"
+          cat "SHA256SUMS-${{ matrix.name }}.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: outpost-${{ matrix.name }}
+          path: |
+            outpost-*
+            SHA256SUMS-*.txt
+
+      - name: Save the screenshots (a separate download, never part of the release)
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-${{ matrix.name }}
+          path: screenshots/
+          if-no-files-found: ignore
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+          pattern: outpost-*
+      - name: Combine the checksum files into one SHA256SUMS
+        run: |
+          # Windows (Git Bash) writes 'hash *name' and may add carriage returns; make every line 'hash<two spaces>name'.
+          cat artifacts/SHA256SUMS-*.txt | tr -d '\r' | sed -E 's/^([0-9a-f]{64}) [ *]/\1  /' | sort -k2 > artifacts/SHA256SUMS
+          rm artifacts/SHA256SUMS-*.txt
+          cat artifacts/SHA256SUMS
+      - name: Name the release
+        run: |
+          echo "RELEASE_NAME=Outpost ${GITHUB_REF_NAME#v}: trustless BTC <-> XMR atomic swaps over Tor" >> "$GITHUB_ENV"
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ env.RELEASE_NAME }}
+          draft: true
+          prerelease: false
+          files: artifacts/*

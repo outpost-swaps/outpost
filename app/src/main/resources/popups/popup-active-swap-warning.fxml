@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" spacing="14.0" style="-fx-background-color: #0e0e0e;"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="swap.gui.controller.popups.PopupActiveSwapWarning">
+    <padding>
+        <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+    </padding>
+    <children>
+        <VBox alignment="TOP_LEFT" spacing="4.0">
+            <children>
+                <Label text="Swap in progress" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="22.0" />
+                    </font>
+                </Label>
+                <Label fx:id="headerText" text="Keep Outpost open until the swap finishes." textFill="#919191" wrapText="true">
+                    <font>
+                        <Font name="Arial" size="12.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+
+        <VBox spacing="6.0" styleClass="app-card">
+            <children>
+                <Label fx:id="summaryText" text="" textFill="#d0d0d0" wrapText="true">
+                    <font>
+                        <Font name="Arial" size="13.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+
+        <VBox spacing="6.0" styleClass="dialog-warning">
+            <children>
+                <Label fx:id="warningTitle" text="CLOSING CAN LOSE BTC" styleClass="dialog-warning-title" />
+                <Label fx:id="warningBody" text="Closing stops swap monitoring. If the swap needs a refund, missing the punish window can lose your BTC."
+                       wrapText="true" styleClass="dialog-warning-body">
+                    <font>
+                        <Font name="Arial" size="12.0" />
+                    </font>
+                </Label>
+                <Label fx:id="asbNote" text="Your ASB will also shut down and any swap it is serving will be interrupted."
+                       wrapText="true" styleClass="dialog-warning-body" managed="false" visible="false">
+                    <font>
+                        <Font name="Arial" size="12.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS" />
+
+        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+            <children>
+                <Button fx:id="keepOpenButton" onAction="#onKeepOpen" text="Keep app open"
+                        styleClass="dialog-button-secondary" defaultButton="true" cancelButton="true" />
+                <Button fx:id="closeAnywayButton" onAction="#onCloseAnyway" text="Close anyway" styleClass="dialog-button-danger" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

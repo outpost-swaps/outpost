@@ -1,0 +1,125 @@
+use libp2p::{
+    PeerId,
+    request_response::{
+        InboundFailure, InboundRequestId, OutboundFailure, OutboundRequestId, ResponseChannel,
+    },
+};
+use libp2p::{identify, ping};
+use uuid::Uuid;
+
+use crate::protocols::rendezvous;
+use crate::protocols::{
+    cooperative_xmr_redeem_after_punish, encrypted_signature, quote::BidQuote, swap_setup,
+};
+
+#[allow(clippy::large_enum_variant)]
+#[derive(Debug)]
+pub enum OutEvent {
+    SwapSetupInitiated {
+        // Span of this swap setup. Work it requests from us is logged under it.
+        span: tracing::Span,
+        // run_swap_setup in connection handler sends us the amount of
+        // Bitcoin Bob wants to send.
+        // We respond with a snapshot of our wallets and how much of that
+        // should go into the amnesty output
+        send_wallet_snapshot: bmrng::RequestReceiver<
+            bitcoin::Amount,
+            (swap_setup::alice::WalletSnapshot, bitcoin::Amount, bool),
+        >,
+        // run_swap_setup sends us Bob's TxLock PSBT once received.
+        // We verify its inputs against the chain and respond with the result.
+        check_lock_inputs: bmrng::RequestReceiver<
+            swap_setup::alice::LockInputCheck,
+            Result<swap_setup::alice::LockInputReservation, swap_setup::alice::LockInputCheckError>,
+        >,
+        // run_swap_setup sends us the swap once Bob committed to it.
+        // We persist and start the swap, then respond so Bob may lock his Bitcoin.
+        register_swap: bmrng::RequestReceiver<swap_setup::alice::RegisterSwap, anyhow::Result<()>>,
+    },
+    SwapDeclined {
+        peer: PeerId,
+        error: swap_setup::alice::Error,
+    },
+    QuoteRequested {
+        channel: ResponseChannel<BidQuote>,
+        peer: PeerId,
+    },
+    TransferProofAcknowledged {
+        peer: PeerId,
+        id: OutboundRequestId,
+    },
+    EncryptedSignatureReceived {
+        msg: encrypted_signature::Request,
+        channel: ResponseChannel<()>,
+        peer: PeerId,
+    },
+    CooperativeXmrRedeemRequested {
+        channel: ResponseChannel<cooperative_xmr_redeem_after_punish::Response>,
+        swap_id: Uuid,
+        peer: PeerId,
+    },
+    Rendezvous(rendezvous::register::Event),
+    // Carried purely so the event loop can record libp2p Prometheus metrics.
+    Ping(ping::Event),
+    Identify(Box<identify::Event>),
+    OutboundRequestResponseFailure {
+        peer: PeerId,
+        error: OutboundFailure,
+        request_id: OutboundRequestId,
+        protocol: String,
+    },
+    InboundRequestResponseFailure {
+        peer: PeerId,
+        error: InboundFailure,
+        request_id: InboundRequestId,
+        protocol: String,
+    },
+    Failure {
+        peer: PeerId,
+        error: anyhow::Error,
+    },
+    /// "Fallback" variant that allows the event mapping code to swallow
+    /// certain events that we don't want the caller to deal with.
+    Other,
+}
+
+impl OutEvent {
+    pub fn unexpected_request(peer: PeerId) -> OutEvent {
+        OutEvent::Failure {
+            peer,
+            error: anyhow::anyhow!("Unexpected request received"),
+        }
+    }
+
+    pub fn unexpected_response(peer: PeerId) -> OutEvent {
+        OutEvent::Failure {
+            peer,
+            error: anyhow::anyhow!("Unexpected response received"),
+        }
+    }
+}
+
+// Some other behaviours which are not worth their own module
+impl From<void::Void> for OutEvent {
+    fn from(event: void::Void) -> Self {
+        void::unreachable(event)
+    }
+}
+
+impl From<ping::Event> for OutEvent {
+    fn from(event: ping::Event) -> Self {
+        OutEvent::Ping(event)
+    }
+}
+
+impl From<identify::Event> for OutEvent {
+    fn from(event: identify::Event) -> Self {
+        OutEvent::Identify(Box::new(event))
+    }
+}
+
+impl From<rendezvous::register::Event> for OutEvent {
+    fn from(event: rendezvous::register::Event) -> Self {
+        OutEvent::Rendezvous(event)
+    }
+}

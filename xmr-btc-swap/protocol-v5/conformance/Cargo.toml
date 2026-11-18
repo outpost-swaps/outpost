@@ -1,0 +1,21 @@
+[package]
+name = "protocol-v5-conformance"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bitcoin = { workspace = true }
+rand_chacha = { workspace = true }
+serde_cbor = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+swap-core = { path = "../swap-core" }
+swap-machine-common = { path = "../swap-machine-common" }
+monero-oxide-ext = { path = "../monero-oxide-ext" }
+uuid = { workspace = true }
+curve25519-dalek-ng = { workspace = true }
+hex = { workspace = true }
+ecdsa_fun = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,38 @@
+[workspace]
+resolver = "2"
+members = [
+  "monero-harness",
+  "monero-rpc",
+  "swap",
+  "monero-wallet",
+  "monero-wallet-ng",
+  "bitcoin-wallet",
+  "electrum-pool",
+  "utxo-ownership-proof",
+]
+exclude = ["protocol-v5"]
+
+[workspace.dependencies]
+anyhow = "1"
+backoff = { version = "0.4", features = ["futures", "tokio"] }
+thiserror = "1"
+curve25519-dalek = { version = "4", features = ["rand_core", "serde"] }
+rand = "0.8"
+zeroize = "^1.5"
+hex = "0.4"
+tokio = { version = "1", features = ["rt-multi-thread", "time", "macros", "sync"] }
+tracing = { version = "0.1", features = ["attributes"] }
+monero-address = { git = "https://github.com/kayabaNerve/monero-oxide.git", rev = "c8be5d3d1287669946a83fbfcb296ce2a8852e47" }
+monero-daemon-rpc = { git = "https://github.com/kayabaNerve/monero-oxide.git", rev = "c8be5d3d1287669946a83fbfcb296ce2a8852e47" }
+monero-interface = { git = "https://github.com/kayabaNerve/monero-oxide.git", rev = "c8be5d3d1287669946a83fbfcb296ce2a8852e47" }
+monero-oxide = { git = "https://github.com/kayabaNerve/monero-oxide.git", rev = "c8be5d3d1287669946a83fbfcb296ce2a8852e47" }
+monero-oxide-wallet = { git = "https://github.com/kayabaNerve/monero-oxide.git", rev = "c8be5d3d1287669946a83fbfcb296ce2a8852e47", package = "monero-wallet" }
+monero-simple-request-rpc = { git = "https://github.com/kayabaNerve/monero-oxide.git", rev = "c8be5d3d1287669946a83fbfcb296ce2a8852e47" }
+
+[patch.crates-io]
+bdk_chain = { path = "bdk-chain" }
+monero = { git = "https://github.com/comit-network/monero-rs", rev = "818f38b" }
+jsonrpc_client = { path = "jsonrpc-client" }
+
+[profile.release]
+overflow-checks = true

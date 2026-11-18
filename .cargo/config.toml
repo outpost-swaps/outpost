@@ -1,0 +1,6 @@
+# Windows (MSVC): libgit2-sys 0.14 (pulled in by the swap crate's build script for git version info) uses
+# functions from advapi32 (OpenProcessToken, CryptGenRandom, RegOpenKeyExW, ...) but does not link it.
+# Older Rust versions linked advapi32 on their own; the pinned toolchain no longer does, so the linking of the
+# build script failed with LNK1120 and the Windows package was built without the Rust programs and library.
+[target.'cfg(all(windows, target_env = "msvc"))']
+rustflags = ["-C", "link-arg=advapi32.lib"]

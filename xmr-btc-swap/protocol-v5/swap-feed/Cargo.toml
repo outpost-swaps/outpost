@@ -1,0 +1,26 @@
+[package]
+name = "swap-feed"
+version = "4.0.0"
+authors = ["The COMIT guys <hello@comit.network>"]
+edition = "2024"
+description = "Price feed functionality for XMR/BTC atomic swaps"
+
+[lib]
+name = "swap_feed"
+
+[dependencies]
+anyhow = { workspace = true }
+backoff = { workspace = true }
+bitcoin = { workspace = true }
+futures = { workspace = true }
+monero-oxide-ext = { path = "../monero-oxide-ext" }
+reqwest = { workspace = true, features = ["http2", "rustls-tls-native-roots", "stream", "socks"] }
+rust_decimal = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-tungstenite = { version = "0.15", features = ["rustls-tls"] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+url = { workspace = true }

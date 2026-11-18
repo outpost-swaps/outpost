@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT address\n        FROM peer_addresses\n        WHERE peer_id = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "address",
+        "ordinal": 0,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "a0eb85d04ee3842c52291dad4d225941d1141af735922fcbc665868997fce304"
+}

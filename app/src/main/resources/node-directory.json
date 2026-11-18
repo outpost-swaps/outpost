@@ -1,0 +1,244 @@
+{
+  "_meta": {
+    "description": "Curated daemon pools for the Outpost app: electrum (BTC) and monero (XMR) nodes. This packaged file is the fallback; a node-directory.json in the app data dir overrides it (edit without rebuilding). Upcoming: dynamic merge from machine-readable directories (dojos-testnet.json, bitcoin.mineracks.com/services.json, monero.fail api/v1/nodes) behind the consent model.",
+    "verification": "testnet electrum genesis+height verified 2026-10-14/15 (mineracks + mempool.space fresh during the 91xtx93 fork, WORKLOG §98/§99/§103); mainnet monero onions verified live 2026-10-15 (monero.fail healthy list, heights at tip); mainnet electrum onions + most clearnet verified 2026-10-08 (notes/endpoint-inventory.md); sparrows' PublicElectrumServer entries verified 2026-10-15 (tip 971,599 / 156,660). | 2026-10-15 re-probe via standalone tor: max/syndicate/yellow/christ-is-king + both 91xtx93 onions ALIVE (testnet caught up, redeem confirmed ×75); kittyserver + 22mgr2fn mainnet onions DEAD → removed. | 2026-10-15: plaintext-tcp mainnet electrum entries (eigenwallet, aranguren, electrs.cakewallet) REMOVED — a Tor exit can read plaintext scripthash queries (wallet-privacy leak); mainnet electrum = onion + ssl-only. | 2026-11-09: two probes over Tor (12 h apart, genesis + tip checked): REMOVED frigate.2140.dev (invalid reply both runs), syndicate.onion (host unreachable both runs), blockstream.info:700 (timed out in 3 of the last 4 probes; electrum.blockstream.info:50002 stays). ADDED kitty.onion and better-than-otto.onion (answered both runs, 6-9 s). max/yellow/christ-is-king re-verified. Considered, not added: Grey-pw (2 of 4 probes), Foundation (0 of 4), Otto (64 s once). | 2026-11-09 monero mainnet, two probes over Tor (get_info): REMOVED nodes.hashvault.pro (self-signed certificate) and opennode.xmr-tw.org (certificate does not match the host name): both answer, but the daemon client and the forwarder verify TLS against webpki roots, so neither can be used, and as a witness they would fail every swap; REMOVED two onions (4iqbqa6..., pi653i7...) that were unreachable in both runs. All other entries synchronized at the same height. | 2026-11-12 probe over Tor of every candidate from this list, Dojo Bay's live directory, Sparrow (2026-05-14) and Ashigaru Desktop (2026-10-29), genesis checked: ADDED mainnet onions SethForPrivacy (iuo6acfd..., 10 s), Grey-pw (fulcrum3li..., 33 s; flaky on 2026-11-09, 2 of 4), Dojo Bay red (5ye5hva3..., 12 s) and Tanto alive (ezmbradx..., 39 s). Sparrow's testnet.aranguren.org:51002 and testnet.qtornado.com:51002 are TESTNET3, not added. Down today but kept (servers come back): bitcoin.lu.ke, mempool.space:40002, both testnet onions. | 2026-11-14 full probe over Tor of every Electrum entry (genesis + tip; 25 of 27 answered): REMOVED bitcoin.lu.ke, electrum.emzy.de, electrum.bitaroo.net, fulcrum.sethforprivacy.com and the SethForPrivacy ssl onion (all answer but present self-signed certificates, and the swap wallet's electrum-client validates against webpki roots, so it cannot connect to them); REMOVED christ-is-king onion and mempool.space:40002 (unreachable in 4 of 4 tries). 20 Electrum entries remain. | 2026-11-14 Monero probe over Tor (get_info, network, synchronized, height; retried failures 3 to 5 times): REMOVED xmr.stormycloud.org:18089 (empty reply to every Tor connection, 5 of 5) and stagenet.xmr-tw.org:38081 (unreachable, 4 of 4). Kept: monerujo clearnet (one 502, then OK 3 of 3) and the plowsof3 stagenet onion (timed out once, then OK 3 of 3). All answering nodes were at the same height. | 2026-11-14 (later): REMOVED bitcoin.mullvad.net:5010: it answers every request before server.version with {code 1, use server.version to identify client}, and the swap wallet's electrum client never sends server.version first, so the ASB's Bitcoin wallet cannot start on it (found when a fresh profile picked it as default). The other 19 entries accept requests without the handshake (checked 2026-11-14). 19 Electrum entries remain."
+  },
+  "electrum": {
+    "mainnet": {
+      "clearnet": [
+        {
+          "name": "electrum.blockstream.info",
+          "url": "ssl://electrum.blockstream.info:50002",
+          "type": "WEB_CORS",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": "bitcoin.stackwallet",
+          "url": "ssl://bitcoin.stackwallet.com:50002",
+          "type": "WEB_CORS",
+          "verified": "2026-10-08"
+        },
+        {
+          "name": "btc-electrum.cakewallet",
+          "url": "ssl://btc-electrum.cakewallet.com:50002",
+          "type": "WEB_CORS",
+          "verified": "2026-10-08"
+        },
+        {
+          "name": "electrum.mineracks",
+          "url": "ssl://electrum.mineracks.com:50002",
+          "type": "WEB_CORS",
+          "verified": "2026-10-14"
+        },
+        {
+          "name": "electrs.mineracks",
+          "url": "ssl://electrs.mineracks.com:50002",
+          "type": "WEB_CORS",
+          "verified": "2026-10-14"
+        },
+        {
+          "name": "electrum.diynodes",
+          "url": "ssl://electrum.diynodes.com:50022",
+          "type": "WEB_CORS",
+          "verified": "2026-10-08"
+        },
+        {
+          "name": "electrum.acinq",
+          "url": "ssl://electrum.acinq.co:50002",
+          "type": "WEB_CORS",
+          "verified": "2026-10-08"
+        }
+      ],
+      "onion": [
+        {
+          "name": "max.onion",
+          "url": "tcp://k3tauelvqb724if4roauzo5v4u4ha74clouplx55o3xownsa5beigqad.onion:50001",
+          "type": "ONION",
+          "verified": "2026-11-09"
+        },
+        {
+          "name": "yellow.onion",
+          "url": "tcp://axcpisfteii7lxq3ktxjv4dmz76nvchga6x3ajy5y3yc6lefpz7n5oad.onion:50001",
+          "type": "ONION",
+          "verified": "2026-11-09"
+        },
+        {
+          "name": "kitty.onion",
+          "url": "tcp://kittycp2gatrqhlwpmbczk5rblw62enrpo2rzwtkfrrr27hq435d4vid.onion:50001",
+          "type": "ONION",
+          "verified": "2026-11-09"
+        },
+        {
+          "name": "better-than-otto.onion",
+          "url": "tcp://dfprv7fbh5ib3kh6fvn6hfmwbjqhh7nur77wkwhglqyq2g4zpq6tl4ad.onion:50001",
+          "type": "ONION",
+          "verified": "2026-11-09"
+        },
+        {
+          "name": "Grey-pw (onion)",
+          "url": "tcp://fulcrum3li3ab37a5d4ew6yd2n4aepkebchddbpfn4ozvx57jcts2tqd.onion:50001",
+          "type": "ONION",
+          "verified": "2026-11-12"
+        },
+        {
+          "name": "Dojo Bay: red",
+          "url": "tcp://5ye5hva3a6xjedfakwn662p3ohivkoafqudlcds6tw5rq2wa2vcjbgad.onion:50001",
+          "type": "ONION",
+          "verified": "2026-11-12"
+        },
+        {
+          "name": "Dojo Bay: Tanto alive",
+          "url": "tcp://ezmbradxtlvvdbhvwvbu552vxwjhlvlepyxhqb6b2wmv7a6flpl5vrqd.onion:50001",
+          "type": "ONION",
+          "verified": "2026-11-12"
+        }
+      ]
+    },
+    "testnet": {
+      "clearnet": [
+        {
+          "name": "blackie.c3-soft.com",
+          "url": "ssl://blackie.c3-soft.com:57010",
+          "type": "WEB_CORS",
+          "verified": "2026-10-11"
+        },
+        {
+          "name": "testnet.aranguren.org",
+          "url": "tcp://testnet.aranguren.org:52001",
+          "type": "WEB_CORS",
+          "verified": "2026-10-11"
+        }
+      ],
+      "onion": [
+        {
+          "name": null,
+          "url": "tcp://xufljktdbo542e6jyc7hat6ybnxx6km57rhmw5qpbzyducdcofyx2kqd.onion:50001",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": null,
+          "url": "tcp://xnkshos5cd6skc3mdzwrfj6erddo24hm4myfsb6b6qyedvroptijg6id.onion:50001",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": null,
+          "url": "ssl://testnet4-electrum.mineracks.com:50002",
+          "type": "WEB_CORS",
+          "verified": "2026-10-14"
+        }
+      ]
+    }
+  },
+  "monero": {
+    "mainnet": {
+      "clearnet": [
+        {
+          "name": "monerujo",
+          "url": "http://nodex.monerujo.io:18081",
+          "type": "WEB_CORS",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": "RichFowler",
+          "url": "http://node.richfowler.net:18089",
+          "type": "WEB_CORS",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": "media-vm.de",
+          "url": "http://node.media-vm.de:18081",
+          "type": "WEB_CORS",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": "thinhhv",
+          "url": "https://xmr.thinhhv.com:443",
+          "type": "WEB_CORS",
+          "verified": "2026-10-08"
+        },
+        {
+          "name": "mineracks",
+          "url": "http://xmr.mineracks.com:18089",
+          "type": "WEB_CORS",
+          "verified": "2026-10-14"
+        }
+      ],
+      "onion": [
+        {
+          "name": "monerujo.onion",
+          "url": "http://monerujods7mbghwe6cobdr6ujih6c22zu5rl7zshmizz2udf7v7fsad.onion:18081",
+          "type": "ONION",
+          "verified": "2026-10-08"
+        },
+        {
+          "name": null,
+          "url": "http://udvq7fj3geowm3xdajlliyi3aohkg3wf2wndjppuyv2sxsjbm4lkwpad.onion:18089",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": null,
+          "url": "http://ravfxmrqgd4j2o2gdc2yaij2wcmkcflu2rdnzhng5htk5hgnh6gmyeid.onion:18081",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": null,
+          "url": "http://pod6ee3fft2vtgfcfnpum4rts5bn7hyl3ye6xeshivryzxbkdi5pp4ad.onion:18089",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": null,
+          "url": "http://js7qd2p3c5xnvh4ft2doiqzfgof2p4x3lzjsbd3eib5azkxfnpbca6ad.onion:18089",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": null,
+          "url": "http://hzrzpi7354q6adtxgeqlpikajam5hva5d2zuqbeayos274ybugzjktid.onion:18089",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": null,
+          "url": "http://isxu7qp3s5qcn2mdzt4t7kopifxe7tsnne4j5vytdphnpqytti5dn5id.onion:18081",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        },
+        {
+          "name": "plowsof.onion",
+          "url": "http://plowsofe6cleftfmk2raiw5h2x66atrik3nja4bfd3zrfa2hdlgworad.onion:18089",
+          "type": "ONION",
+          "verified": "2026-10-15"
+        }
+      ]
+    },
+    "stagenet": {
+      "clearnet": [
+        {
+          "name": null,
+          "url": "http://node2.monerodevs.org:38089",
+          "type": "WEB_CORS",
+          "verified": "2026-10-15"
+        }
+      ],
+      "onion": [
+        {
+          "name": null,
+          "url": "http://plowsoffjexmxalw73tkjmf422gq6575fc7vicuu4javzn2ynnte6tyd.onion:38089",
+          "type": "ONION",
+          "verified": "2026-10-08"
+        },
+        {
+          "name": null,
+          "url": "http://plowsof3t5hogddwabaeiyrno25efmzfxyro2vligremt7sxpsclfaid.onion:38089",
+          "type": "ONION",
+          "verified": "2026-10-08"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefWidth="620.0" spacing="14.0" style="-fx-background-color: #0e0e0e;"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="swap.gui.controller.popups.PopupInformation">
+    <padding>
+        <Insets bottom="22.0" left="28.0" right="28.0" top="22.0" />
+    </padding>
+    <children>
+        <VBox spacing="4.0">
+            <children>
+                <Label fx:id="titleText" text="Title" textFill="#c0201a" wrapText="true">
+                    <font>
+                        <Font name="Arial Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label fx:id="subtitleText" styleClass="import-hint" wrapText="true" />
+            </children>
+        </VBox>
+
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="540.0" maxHeight="560.0" styleClass="dialog-scroll">
+            <content>
+                <VBox spacing="12.0">
+                    <padding>
+                        <Insets right="8.0" />
+                    </padding>
+                    <children>
+                        <VBox fx:id="itemsCard" spacing="8.0" styleClass="app-card">
+                            <children>
+                                <Label text="HIGHLIGHTS" styleClass="dialog-section-title" />
+                                <VBox fx:id="itemsBox" spacing="8.0" />
+                            </children>
+                        </VBox>
+                        <VBox fx:id="noteCard" spacing="4.0" styleClass="dialog-warning">
+                            <children>
+                                <Label text="GOOD TO KNOW" styleClass="dialog-warning-title" />
+                                <Label fx:id="noteText" styleClass="dialog-warning-body" wrapText="true" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <HBox alignment="CENTER_RIGHT">
+            <children>
+                <Button fx:id="closeButton" onAction="#closeWindow" text="Close" styleClass="dialog-button-secondary" defaultButton="true" cancelButton="true" minWidth="72.0" prefWidth="72.0" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

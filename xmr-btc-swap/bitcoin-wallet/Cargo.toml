@@ -1,0 +1,39 @@
+[package]
+name = "bitcoin-wallet"
+version = "0.1.0"
+edition = "2024"
+autotests = false
+
+[dependencies]
+anyhow = "1"
+async-trait = "0.1"
+backoff = { version = "0.4", features = ["futures", "tokio"] }
+bdk = "0.28"
+bdk_chain = "0.23.0"
+bdk_core = "0.6.0"
+bdk_electrum = { version = "0.23.0", default-features = false, features = ["use-rustls-ring"] }
+bdk_wallet = { version = "2.0.0", features = ["rusqlite", "test-utils"] }
+bitcoin = { version = "0.32", features = ["rand", "serde"] }
+derive_builder = "0.20.2"
+electrum-pool = { path = "../electrum-pool" }
+futures = "0.3"
+moka = { version = "0.12", features = ["sync", "future"] }
+reqwest = { version = "0.12", default-features = false, features = ["http2", "json", "rustls-tls-native-roots", "stream", "socks"] }
+rust_decimal = { version = "1", features = ["serde-float"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "time", "macros", "sync", "process", "fs", "net"] }
+tracing = { version = "0.1", features = ["attributes"] }
+url = { version = "2", features = ["serde"] }
+utxo-ownership-proof = { path = "../utxo-ownership-proof" }
+
+[features]
+test-support = []
+
+[dev-dependencies]
+tempfile = "3"
+
+[[test]]
+name = "regression"
+path = "tests/regression.rs"

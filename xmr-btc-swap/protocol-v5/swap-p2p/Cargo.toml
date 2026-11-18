@@ -1,0 +1,65 @@
+[package]
+name = "swap-p2p"
+version = "4.0.0"
+edition = "2024"
+
+[dependencies]
+# Our crates
+bitcoin-wallet = { path = "../../bitcoin-wallet" }
+swap-core = { path = "../swap-core" }
+swap-env = { path = "../swap-env" }
+swap-feed = { path = "../swap-feed" }
+swap-machine = { path = "../swap-machine" }
+swap-serde = { path = "../swap-serde" }
+
+utxo-ownership-proof = { path = "../../utxo-ownership-proof" }
+
+# Networking
+async-trait = { workspace = true, optional = true }
+libp2p = { workspace = true, features = ["serde", "request-response", "rendezvous", "cbor", "json", "ping", "identify", "relay"] }
+
+# Metrics
+prometheus-client = "0.22"
+
+# Serialization
+asynchronous-codec = "0.7.0"
+serde = { workspace = true }
+serde_cbor = { workspace = true }
+typeshare = { workspace = true }
+unsigned-varint = { version = "0.8.0", features = ["codec", "asynchronous_codec"] }
+
+# Crypto
+bitcoin = { workspace = true }
+monero-address = { workspace = true }
+rand = { workspace = true }
+rust_decimal = { workspace = true }
+
+# Utils
+anyhow = { workspace = true }
+backoff = { workspace = true }
+semver = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true, features = ["serde"] }
+void = "1"
+
+# Async
+bmrng = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+
+[features]
+test-support = ["libp2p/noise", "libp2p/tcp", "libp2p/yamux", "libp2p/tokio", "libp2p/dns", "dep:async-trait"]
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util", "io-util"] }
+tokio-util = { workspace = true, features = ["compat"] }
+async-trait = { workspace = true }
+libp2p = { workspace = true, features = ["serde", "request-response", "rendezvous", "cbor", "json", "ping", "identify", "noise", "tcp", "yamux", "tokio", "dns"] }
+
+tracing-subscriber = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,27 @@
+[package]
+name = "swap-machine-common"
+version = "4.0.0"
+edition = "2024"
+
+[dependencies]
+anyhow = { workspace = true }
+bitcoin = { workspace = true }
+bitcoin-wallet = { path = "../../bitcoin-wallet" }
+curve25519-dalek-ng = { workspace = true }
+ecdsa_fun = { workspace = true }
+monero-oxide-ext = { path = "../monero-oxide-ext" }
+monero-oxide-wallet = { workspace = true }
+rand_chacha = { workspace = true }
+rust_decimal = { workspace = true }
+serde = { workspace = true }
+sha2 = { workspace = true }
+sigma_fun = { workspace = true, default-features = false, features = ["ed25519", "serde", "secp256k1", "alloc"] }
+swap-core = { path = "../swap-core" }
+swap-env = { path = "../swap-env" }
+swap-serde = { path = "../swap-serde" }
+thiserror = { workspace = true }
+utxo-ownership-proof = { path = "../../utxo-ownership-proof" }
+uuid = { workspace = true, features = ["serde"] }
+
+[lints]
+workspace = true

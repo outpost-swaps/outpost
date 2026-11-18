@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="740.0" prefWidth="720.0" spacing="16.0" styleClass="import-dialog" style="-fx-background-color: #0e0e0e;"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="swap.gui.controller.popups.PopupConnectWallet">
+    <padding>
+        <Insets bottom="22.0" left="28.0" right="28.0" top="22.0" />
+    </padding>
+    <children>
+        <VBox spacing="4.0">
+            <children>
+                <Label fx:id="titleLabel" text="Connect your wallet" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label fx:id="stepSubtitle" styleClass="import-hint" wrapText="true" />
+            </children>
+        </VBox>
+
+        <HBox alignment="CENTER_LEFT" spacing="12.0">
+            <children>
+                <Label fx:id="stepper1" text="1  WALLET" styleClass="stepper-label" />
+                <Region styleClass="stepper-line" HBox.hgrow="ALWAYS" />
+                <Label fx:id="stepper2" text="2  DOJO" styleClass="stepper-label" />
+                <Region styleClass="stepper-line" HBox.hgrow="ALWAYS" />
+                <Label fx:id="stepper3" text="3  SERVERS" styleClass="stepper-label" />
+                <Region styleClass="stepper-line" HBox.hgrow="ALWAYS" />
+                <Label fx:id="stepper4" text="4  CONNECT" styleClass="stepper-label" />
+            </children>
+        </HBox>
+
+        <StackPane VBox.vgrow="ALWAYS">
+            <children>
+                <ScrollPane fx:id="walletScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="dialog-scroll">
+                    <content>
+                        <VBox spacing="12.0">
+                            <padding>
+                                <Insets right="8.0" />
+                            </padding>
+                            <children>
+                                <VBox fx:id="wordsCard" spacing="10.0" styleClass="option-card">
+                                    <children>
+                                        <RadioButton fx:id="wordsMode" text="Seed words" selected="true">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="walletSource" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <Label text="The 12 or 24 words of Ashigaru or any standard BIP39 wallet, such as Sparrow." styleClass="import-hint" wrapText="true" />
+                                        <VBox fx:id="wordsInputs" spacing="8.0">
+                                            <children>
+                                                <TextArea fx:id="wordsArea" prefRowCount="3" wrapText="true" promptText="Seed words, separated by spaces" />
+                                                <PasswordField fx:id="bip39Pass" promptText="BIP39 passphrase (leave empty if the wallet has none)" />
+                                                <HBox alignment="CENTER_LEFT" spacing="16.0">
+                                                    <children>
+                                                        <Label text="NETWORK" styleClass="dialog-section-title" />
+                                                        <RadioButton text="Mainnet" selected="true">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="networkGroup" />
+                                                            </toggleGroup>
+                                                        </RadioButton>
+                                                        <RadioButton fx:id="testnetRadio" text="Testnet" toggleGroup="$networkGroup" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox fx:id="backupCard" spacing="10.0" styleClass="option-card">
+                                    <children>
+                                        <RadioButton fx:id="backupMode" text="Backup file" toggleGroup="$walletSource" />
+                                        <Label text="Ashigaru's encrypted backup. Carries your seed, passphrase, network and Dojo." styleClass="import-hint" wrapText="true" />
+                                        <VBox fx:id="backupInputs" spacing="8.0" managed="false" visible="false">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <Button onAction="#onChooseFile" text="Choose file..." styleClass="dialog-button-secondary" />
+                                                        <Label fx:id="fileLabel" text="No file chosen" textFill="#919191" />
+                                                    </children>
+                                                </HBox>
+                                                <PasswordField fx:id="backupPass" promptText="Wallet passphrase" />
+                                                <Label text="Ashigaru only writes a backup for wallets that have a passphrase." styleClass="import-hint" wrapText="true" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox fx:id="payloadCard" spacing="10.0" styleClass="option-card">
+                                    <children>
+                                        <RadioButton fx:id="payloadMode" text="Pairing payload" toggleGroup="$walletSource" />
+                                        <Label text="From Ashigaru's Pair to Swaps GUI, on versions that still have it. Carries your Dojo too." styleClass="import-hint" wrapText="true" />
+                                        <VBox fx:id="payloadInputs" spacing="8.0" managed="false" visible="false">
+                                            <children>
+                                                <TextArea fx:id="payloadText" prefRowCount="2" wrapText="true" promptText="Paste the pairing payload" />
+                                                <PasswordField fx:id="payloadPass" promptText="Wallet passphrase" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox fx:id="createCard" spacing="10.0" styleClass="option-card">
+                                    <children>
+                                        <RadioButton fx:id="createMode" text="Create new wallet" toggleGroup="$walletSource" />
+                                        <Label text="12 words and a passphrase, made the way Ashigaru makes them, so the same wallet opens in Ashigaru Mobile. Use it for swapping, not for savings." styleClass="import-hint" wrapText="true" />
+                                        <VBox fx:id="createInputs" spacing="8.0" managed="false" visible="false">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="16.0">
+                                                    <children>
+                                                        <Label text="NETWORK" styleClass="dialog-section-title" />
+                                                        <RadioButton text="Mainnet" selected="true">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="createNetworkGroup" />
+                                                            </toggleGroup>
+                                                        </RadioButton>
+                                                        <RadioButton fx:id="createTestnetRadio" text="Testnet" toggleGroup="$createNetworkGroup" />
+                                                    </children>
+                                                </HBox>
+                                                <PasswordField fx:id="createPass" promptText="Passphrase (required)" />
+                                                <PasswordField fx:id="createPassRepeat" promptText="Repeat the passphrase" />
+                                                <Label text="Use a strong passphrase: long, random, and not used anywhere else. Without both the words and this passphrase, the funds are lost. Nobody can reset either." styleClass="import-hint" wrapText="true" />
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <Button fx:id="generateButton" onAction="#onGenerateWords" text="Generate words" styleClass="dialog-button-secondary" />
+                                                    </children>
+                                                </HBox>
+                                                <VBox fx:id="wordsShown" spacing="8.0" styleClass="app-card" managed="false" visible="false">
+                                                    <children>
+                                                        <Label text="YOUR 12 WORDS" styleClass="dialog-section-title" />
+                                                        <GridPane fx:id="wordsGrid" hgap="18.0" vgap="6.0" />
+                                                        <Label text="Write them on paper, in order. Never screenshot, photograph or paste them." styleClass="import-hint" wrapText="true" />
+                                                        <Button onAction="#onWordsWrittenDown" text="I wrote them down" styleClass="dialog-button-secondary" />
+                                                    </children>
+                                                </VBox>
+                                                <VBox fx:id="confirmShown" spacing="8.0" styleClass="app-card" managed="false" visible="false">
+                                                    <children>
+                                                        <Label text="CONFIRM YOUR WORDS" styleClass="dialog-section-title" />
+                                                        <Label text="From your paper, type the words asked for." styleClass="import-hint" wrapText="true" />
+                                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                            <children>
+                                                                <TextField fx:id="confirm1" prefColumnCount="9" styleClass="confirm-word" />
+                                                                <TextField fx:id="confirm2" prefColumnCount="9" styleClass="confirm-word" />
+                                                                <TextField fx:id="confirm3" prefColumnCount="9" styleClass="confirm-word" />
+                                                            </children>
+                                                        </HBox>
+                                                        <Button onAction="#onShowWordsAgain" text="Show the words again" styleClass="dialog-button-secondary" />
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox fx:id="verifyCard" spacing="10.0" styleClass="app-card" managed="false" visible="false">
+                                    <children>
+                                        <Label text="WALLET FOUND" styleClass="dialog-section-title" />
+                                        <HBox alignment="CENTER_LEFT" spacing="14.0">
+                                            <children>
+                                                <ImageView fx:id="fingerprintImage" fitHeight="64.0" fitWidth="64.0" preserveRatio="true" />
+                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                                            <children>
+                                                                <Label text="Fingerprint" styleClass="summary-key" />
+                                                                <Label fx:id="fingerprintLabel" styleClass="import-mono-large" />
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="TOP_LEFT" spacing="8.0">
+                                                            <children>
+                                                                <Label text="First address" styleClass="summary-key" />
+                                                                <Label fx:id="addressLabel" styleClass="import-mono-small" wrapText="true" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                        <Label fx:id="verifyHint" text="Compare these with your wallet. A mistyped passphrase opens a different, empty wallet without any error."
+                                               wrapText="true" styleClass="import-hint" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+                <ScrollPane fx:id="dojoScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="dialog-scroll" managed="false" visible="false">
+                    <content>
+                        <VBox spacing="12.0">
+                            <padding>
+                                <Insets right="8.0" />
+                            </padding>
+                            <children>
+                                <VBox fx:id="walletDojoCard" spacing="6.0" styleClass="option-card">
+                                    <children>
+                                        <RadioButton fx:id="dojoFromWallet" text="The Dojo from your wallet">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="dojoSource" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <Label fx:id="walletDojoUrl" styleClass="import-mono-small" wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                                <VBox fx:id="publicDojoCard" spacing="10.0" styleClass="option-card">
+                                    <children>
+                                        <RadioButton fx:id="dojoPublic" text="A public Dojo" toggleGroup="$dojoSource" />
+                                        <Label fx:id="publicDojoHint" styleClass="import-hint" wrapText="true" />
+                                        <Label fx:id="dojoListStatus" styleClass="import-hint" wrapText="true" />
+                                        <VBox fx:id="publicDojoInputs" spacing="8.0" managed="false" visible="false">
+                                            <children>
+                                                <ComboBox fx:id="dojoChoice" promptText="Choose a public Dojo..." maxWidth="1.7976931348623157E308" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox fx:id="ownDojoCard" spacing="10.0" styleClass="option-card">
+                                    <children>
+                                        <RadioButton fx:id="dojoOwn" text="My own Dojo" toggleGroup="$dojoSource" />
+                                        <Label text="Paste its pairing JSON, or enter the URL and API key." styleClass="import-hint" wrapText="true" />
+                                        <VBox fx:id="ownDojoInputs" spacing="8.0" managed="false" visible="false">
+                                            <children>
+                                                <TextArea fx:id="dojoJson" prefRowCount="2" wrapText="true" promptText="Dojo pairing JSON" />
+                                                <Label text="or" styleClass="import-hint" maxWidth="1.7976931348623157E308" alignment="CENTER" />
+                                                <TextField fx:id="dojoUrl" promptText="Dojo URL (http://...onion/...)" />
+                                                <PasswordField fx:id="dojoKey" promptText="Dojo API key" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <Button fx:id="dojoTestButton" onAction="#onTestDojo" text="Test connection" styleClass="dialog-button-secondary" minWidth="-Infinity" disable="true" />
+                                        <Label fx:id="dojoTestResult" styleClass="import-hint" wrapText="true" HBox.hgrow="ALWAYS" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+                <ScrollPane fx:id="serversScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="dialog-scroll" managed="false" visible="false">
+                    <content>
+                        <VBox spacing="12.0">
+                            <padding>
+                                <Insets right="8.0" />
+                            </padding>
+                            <children>
+                                <VBox spacing="10.0" styleClass="app-card">
+                                    <children>
+                                        <Label text="BITCOIN: ELECTRUM SERVER" styleClass="dialog-section-title" />
+                                        <Label text="The swap engine follows the Bitcoin chain through this server. Your Dojo still provides balances and fee estimates." styleClass="import-hint" wrapText="true" />
+                                        <HBox alignment="CENTER_LEFT" spacing="16.0">
+                                            <children>
+                                                <RadioButton fx:id="electrumListed" text="From public list" selected="true">
+                                                    <toggleGroup>
+                                                        <ToggleGroup fx:id="electrumSource" />
+                                                    </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton fx:id="electrumOwnRadio" text="Another server" toggleGroup="$electrumSource" />
+                                            </children>
+                                        </HBox>
+                                        <ComboBox fx:id="electrumChoice" maxWidth="1.7976931348623157E308" />
+                                        <TextField fx:id="electrumOwnField" promptText="tcp://server.onion:50001" managed="false" visible="false" />
+                                        <CheckBox fx:id="electrumRunsMyself" text="Personal server" managed="false" visible="false">
+                                            <tooltip>
+                                                <Tooltip text="Outpost then uses it alone, never a public fallback (better privacy)." />
+                                            </tooltip>
+                                        </CheckBox>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <Button fx:id="electrumTestButton" onAction="#onTestElectrum" text="Test connection" styleClass="dialog-button-secondary" minWidth="-Infinity" />
+                                                <Label fx:id="electrumTestResult" styleClass="import-hint" wrapText="true" HBox.hgrow="ALWAYS" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="10.0" styleClass="app-card">
+                                    <children>
+                                        <Label text="MONERO NODE" styleClass="dialog-section-title" />
+                                        <Label text="Your Monero wallets sync from this node. Your own node is the most private." styleClass="import-hint" wrapText="true" />
+                                        <HBox alignment="CENTER_LEFT" spacing="16.0">
+                                            <children>
+                                                <RadioButton fx:id="moneroListed" text="From public list" selected="true">
+                                                    <toggleGroup>
+                                                        <ToggleGroup fx:id="moneroSource" />
+                                                    </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton fx:id="moneroOwnRadio" text="Another node" toggleGroup="$moneroSource" />
+                                            </children>
+                                        </HBox>
+                                        <ComboBox fx:id="moneroChoice" maxWidth="1.7976931348623157E308" />
+                                        <TextField fx:id="moneroOwnField" promptText="http://node.onion:18089" managed="false" visible="false" />
+                                        <CheckBox fx:id="moneroRunsMyself" text="Personal node" managed="false" visible="false" />
+                                        <Label fx:id="moneroRunsMyselfHint" text="Only for a node you run yourself: Outpost then trusts it alone to confirm a seller's Monero lock." styleClass="import-hint" wrapText="true" managed="false" visible="false" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <Button fx:id="moneroTestButton" onAction="#onTestMonero" text="Test connection" styleClass="dialog-button-secondary" minWidth="-Infinity" />
+                                                <Label fx:id="moneroTestResult" styleClass="import-hint" wrapText="true" HBox.hgrow="ALWAYS" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <Label text="Both are reached over Tor only. You can change them later in Settings." styleClass="import-hint" wrapText="true" />
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+                <ScrollPane fx:id="reviewScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="dialog-scroll" managed="false" visible="false">
+                    <content>
+                        <VBox spacing="12.0">
+                            <padding>
+                                <Insets right="8.0" />
+                            </padding>
+                            <children>
+                                <HBox spacing="16.0" alignment="CENTER_LEFT" styleClass="app-card">
+                                    <children>
+                                        <ImageView fx:id="reviewImage" fitHeight="64.0" fitWidth="64.0" preserveRatio="true" />
+                                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                                    <children>
+                                                        <Label text="Wallet" styleClass="summary-key" />
+                                                        <Label fx:id="reviewFingerprint" styleClass="import-mono-large" />
+                                                        <Label fx:id="reviewNetwork" styleClass="import-hint" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="TOP_LEFT" spacing="8.0">
+                                                    <children>
+                                                        <Label text="Address" styleClass="summary-key" />
+                                                        <Label fx:id="reviewAddress" styleClass="import-mono-small" wrapText="true" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="TOP_LEFT" spacing="8.0">
+                                                    <children>
+                                                        <Label text="Dojo" styleClass="summary-key" />
+                                                        <Label fx:id="reviewDojo" styleClass="import-mono-small" wrapText="true" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="TOP_LEFT" spacing="8.0">
+                                                    <children>
+                                                        <Label text="Electrum" styleClass="summary-key" />
+                                                        <Label fx:id="reviewElectrum" styleClass="import-mono-small" wrapText="true" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="TOP_LEFT" spacing="8.0">
+                                                    <children>
+                                                        <Label text="Monero" styleClass="summary-key" />
+                                                        <Label fx:id="reviewMonero" styleClass="import-mono-small" wrapText="true" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+
+                                <VBox fx:id="appPasswordCard" spacing="8.0" styleClass="app-card" managed="false" visible="false">
+                                    <children>
+                                        <Label text="APP PASSWORD" styleClass="dialog-section-title" />
+                                        <Label text="This wallet has no passphrase of its own. Choose a password: it encrypts the wallet on this computer and unlocks the app. Remember it." styleClass="import-hint" wrapText="true" />
+                                        <PasswordField fx:id="appPassword" promptText="Password" />
+                                        <PasswordField fx:id="appPasswordRepeat" promptText="Repeat the password" />
+                                    </children>
+                                </VBox>
+
+                                <VBox fx:id="backupExportCard" spacing="8.0" styleClass="app-card" managed="false" visible="false">
+                                    <children>
+                                        <Label text="ASHIGARU BACKUP FILE" styleClass="dialog-section-title" />
+                                        <Label text="Optional. A file Ashigaru Mobile restores from (Restore, then backup file, then your passphrase). It is encrypted with your passphrase and carries this Dojo." styleClass="import-hint" wrapText="true" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <Button onAction="#onSaveBackup" text="Save backup file..." styleClass="dialog-button-secondary" />
+                                                <Label fx:id="backupSavedLabel" styleClass="import-hint" wrapText="true" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="6.0" styleClass="app-card">
+                                    <children>
+                                        <CheckBox fx:id="startAsbBox" text="Also start the ASB (sell Monero as a market maker)" textFill="WHITE" />
+                                        <Label text="You can start it later from the Liquidity page." styleClass="import-hint" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </children>
+        </StackPane>
+
+        <Label fx:id="messageLabel" wrapText="true" styleClass="import-hint" />
+
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <children>
+                <Button onAction="#onCancel" text="Cancel" styleClass="dialog-button-secondary" cancelButton="true" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="backButton" onAction="#onBack" text="Back" styleClass="dialog-button-secondary" managed="false" visible="false" />
+                <Button fx:id="nextButton" onAction="#onNext" text="Next" styleClass="dialog-button-danger" disable="true" defaultButton="true" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

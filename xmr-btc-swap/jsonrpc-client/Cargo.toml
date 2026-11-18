@@ -1,0 +1,25 @@
+[package]
+name = "jsonrpc_client"
+version = "0.7.1"
+authors = [ "Thomas Eizinger <thomas@eizinger.io>" ]
+categories = [ "web-programming::http-client", "api-bindings", "network-programming" ]
+edition = "2018"
+keywords = [ "jsonrpc", "macro", "http", "client" ]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/thomaseizinger/rust-jsonrpc-client"
+description = "An async, macro-driven JSON-RPC client with pluggable backends."
+
+[dependencies]
+async-trait = "0.1"
+jsonrpc_client_macro = { version = "0.3", optional = true }
+reqwest = { version = "0.12", default-features = false, features = [ "json" ], optional = true }
+reqwest_011 = { package = "reqwest", version = "0.11", default-features = false, features = [ "json" ], optional = true }
+serde = { version = "1", features = [ "derive" ] }
+serde_json = "1"
+url = "2"
+
+[features]
+default = [ "macros" ]
+macros = [ "jsonrpc_client_macro" ]
+reqwest = [ "dep:reqwest_011" ]
+reqwest-012 = [ "dep:reqwest" ]

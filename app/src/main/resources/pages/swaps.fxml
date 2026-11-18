@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import swap.gui.node.*?>
+
+<!-- prefHeight pinned to a whole pixel: the computed pref (460.5, from
+     fractional font metrics) leaked a 0.5px row-height wobble into the main
+     GridPane, shifting the nav bar on every tab switch. The page is
+     anchored top+bottom, so this value only stabilizes row sizing. -->
+<GridPane fx:id="swapsPane" prefHeight="460.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="swap.gui.controller.pages.SwapsController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+    </columnConstraints>
+    <children>
+        <VBox styleClass="app-card" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <children>
+                <Label fx:id="swapTitleLabel" managed="false" styleClass="app-card-title" text="Swap" textFill="#c0201a" visible="false">
+                    <font>
+                        <Font name="Arial Bold" size="14.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="6.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="moneroAddressLabel" styleClass="app-card-title" text="Monero Address" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="14.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="6.0" />
+                    </VBox.margin>
+                </Label>
+                <TextField fx:id="moneroAddressTextField" prefHeight="28.0" minHeight="28.0" promptText="87BqQYkugEzh6Tuyotm2uc3DzJzKM6MuZaC161e6u1TsQxxPmXVPHpdNRyK47JY4d1hhbe25YVz4e9vTXCLDxvHkRXEAeBC">
+                    <font>
+                        <Font name="Arial" size="12.0" />
+                    </font>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </padding>
+                    <VBox.margin>
+                        <Insets bottom="12.0" />
+                    </VBox.margin>
+                </TextField>
+                <Label fx:id="moneroSellerLabel" styleClass="app-card-title" text="Monero Seller" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="14.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="6.0" />
+                    </VBox.margin>
+                </Label>
+                <TextField fx:id="libp2pPeerTextField" prefHeight="28.0" minHeight="28.0" promptText="Choose seller from list, or paste their libp2p address here">
+                    <font>
+                        <Font name="Arial" size="12.0" />
+                    </font>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </padding>
+                    <VBox.margin>
+                        <Insets bottom="12.0" />
+                    </VBox.margin>
+                </TextField>
+                <VBox fx:id="estimateRow">
+                    <children>
+                        <HBox alignment="CENTER_LEFT">
+                            <children>
+                                <Label text="Amount (optional)" styleClass="app-card-title" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="estimateNote" text="Pick a seller first" textFill="#9aa0a6" textOverrun="ELLIPSIS">
+                                    <font>
+                                        <Font name="Arial" size="11.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                            <VBox.margin>
+                                <Insets bottom="6.0" />
+                            </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <children>
+                                <StackPane HBox.hgrow="ALWAYS" maxWidth="Infinity" alignment="CENTER_RIGHT">
+                                    <children>
+                                        <TextField fx:id="payBtcField" prefHeight="28.0" minHeight="28.0" promptText="You pay" style="-fx-padding: 5 40 5 5;">
+                                            <font>
+                                                <Font name="Arial" size="12.0" />
+                                            </font>
+                                        </TextField>
+                                        <Label text="BTC" textFill="#9aa0a6" mouseTransparent="true">
+                                            <font>
+                                                <Font name="Arial Bold" size="11.0" />
+                                            </font>
+                                            <StackPane.margin>
+                                                <Insets right="8.0" />
+                                            </StackPane.margin>
+                                        </Label>
+                                    </children>
+                                </StackPane>
+                                <Label text="&#8644;" textFill="#9aa0a6" />
+                                <StackPane HBox.hgrow="ALWAYS" maxWidth="Infinity" alignment="CENTER_RIGHT">
+                                    <children>
+                                        <TextField fx:id="receiveXmrField" prefHeight="28.0" minHeight="28.0" promptText="You get" style="-fx-padding: 5 40 5 5;">
+                                            <font>
+                                                <Font name="Arial" size="12.0" />
+                                            </font>
+                                        </TextField>
+                                        <Label text="XMR" textFill="#9aa0a6" mouseTransparent="true">
+                                            <font>
+                                                <Font name="Arial Bold" size="11.0" />
+                                            </font>
+                                            <StackPane.margin>
+                                                <Insets right="8.0" />
+                                            </StackPane.margin>
+                                        </Label>
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </HBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="12.0" />
+                    </VBox.margin>
+                </VBox>
+                <HBox fx:id="swapActionsBox" alignment="CENTER_LEFT">
+                    <children>
+                        <Button fx:id="startButton" styleClass="dialog-button-danger" disable="true" mnemonicParsing="false" onAction="#onStartButtonClick" text="Buy Monero">
+                            <HBox.margin>
+                                <Insets right="6.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#onClearButtonClick" text="Clear">
+                            <HBox.margin>
+                                <Insets right="20.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox fx:id="priceBoxes" spacing="6.0" alignment="CENTER_RIGHT">
+                            <children>
+                                <VBox fx:id="xmrPriceBox" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="0.0" managed="false" visible="false" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 3 8 3 8;">
+                                    <children>
+                                        <Label text="1 XMR ≈" textFill="#9aa0a6"><font><Font name="Arial Bold" size="9.0" /></font></Label>
+                                        <Label fx:id="xmrPriceValue" text="—" textFill="#e7eaf0"><font><Font name="Menlo" size="11.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                                <VBox fx:id="btcPriceBox" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="0.0" managed="false" visible="false" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 3 8 3 8;">
+                                    <children>
+                                        <Label text="1 BTC ≈" textFill="#9aa0a6"><font><Font name="Arial Bold" size="9.0" /></font></Label>
+                                        <Label fx:id="btcPriceValue" text="—" textFill="#e7eaf0"><font><Font name="Menlo" size="11.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+                <VBox fx:id="swapCenterBox" alignment="CENTER" VBox.vgrow="ALWAYS">
+                    <children>
+                        <VBox fx:id="swapContextBox" alignment="CENTER_LEFT" managed="false" spacing="2.0" visible="false" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #30343a; -fx-border-radius: 4; -fx-padding: 5 10 5 10;">
+                            <VBox.margin>
+                                <Insets bottom="12.0" />
+                            </VBox.margin>
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                        <Label minWidth="48.0" text="Seller" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="swapContextSeller" maxWidth="1.7976931348623157E308" text="—" textFill="#e7eaf0" textOverrun="ELLIPSIS">
+                                            <font>
+                                                <Font name="Menlo" size="13.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                        <Label minWidth="48.0" text="XMR" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="swapContextXmr" maxWidth="1.7976931348623157E308" text="—" textFill="#e7eaf0" textOverrun="ELLIPSIS">
+                                            <font>
+                                                <Font name="Menlo" size="13.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                        <Label minWidth="48.0" text="Price" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="swapContextPrice" maxWidth="1.7976931348623157E308" text="—" textFill="#e7eaf0" textOverrun="ELLIPSIS">
+                                            <font>
+                                                <Font name="Menlo" size="13.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                        <Label minWidth="48.0" text="Amount" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="swapContextAmount" maxWidth="1.7976931348623157E308" text="—" textFill="#e7eaf0" textOverrun="ELLIPSIS">
+                                            <font>
+                                                <Font name="Menlo" size="13.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <ProgressBar fx:id="swapProgressBar" managed="false" minHeight="22.0" prefHeight="22.0" maxWidth="360.0" prefWidth="360.0" progress="0.0" styleClass="swap-progress" visible="false">
+                            <VBox.margin>
+                                <Insets bottom="18.0" top="6.0" />
+                            </VBox.margin>
+                        </ProgressBar>
+                        <VBox fx:id="swapStatusBox" alignment="CENTER" managed="false" maxWidth="340.0" prefWidth="340.0" minHeight="54.0" prefHeight="54.0" spacing="7.0" visible="false" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 6 10 6 10;">
+                            <VBox.margin>
+                                <Insets bottom="4.0" />
+                            </VBox.margin>
+                            <children>
+                                <Label fx:id="swapStatusText" alignment="CENTER" maxWidth="320.0" textFill="#e7eaf0" wrapText="true">
+                                    <font>
+                                        <Font name="Arial" size="13.0" />
+                                    </font>
+                                </Label>
+                                <!-- Swap Success: the exact XMR received (matrix N-15), inside the status card.
+                                     When shown, the progress bar's slot (46 px) collapses and the card grows
+                                     from 54 to 100 px, so the 104 px total and everything below stay put. -->
+                                <VBox fx:id="swapReceivedBox" alignment="CENTER" managed="false" visible="false" spacing="0.0" minHeight="38.0" prefHeight="38.0" maxHeight="38.0">
+                                    <children>
+                                        <Label fx:id="swapReceivedAmount" textFill="#e7eaf0">
+                                            <font>
+                                                <Font name="Arial Bold" size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="swapReceivedCaption" textFill="#7d8288">
+                                            <font>
+                                                <Font name="Arial" size="10.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                                <TextField fx:id="swapStatusDetail" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="320.0" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0; -fx-text-fill: #9aa0a6;">
+                                    <font>
+                                        <Font name="Menlo" size="12.0" />
+                                    </font>
+                                </TextField>
+                            </children>
+                        </VBox>
+                        <StackPane fx:id="swapImageBox" alignment="CENTER" minHeight="68.0" prefHeight="68.0">
+                            <children>
+                                <ImageView fx:id="swapImage" fitHeight="64.0" fitWidth="64.0" managed="false" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" />
+                                <FontAwesomeIconView fx:id="swapIcon" fill="WHITE" glyphName="EXCHANGE" managed="false" size="60" visible="false" />
+                            </children>
+                            <VBox.margin>
+                                <Insets top="0.0" />
+                            </VBox.margin>
+                        </StackPane>
+                        <VBox fx:id="swapIdleHint" alignment="CENTER" managed="true" spacing="4.0" visible="true">
+                            <VBox.margin>
+                                <Insets top="14.0" />
+                            </VBox.margin>
+                            <children>
+                                <Label alignment="CENTER" text="No active swap" textFill="#9aa0a6">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <Label alignment="CENTER" maxWidth="330.0" text="Choose a seller, enter your Monero address,&#10;then press Buy Monero." textFill="#9aa0a6" textAlignment="CENTER">
+                                    <font>
+                                        <Font name="Arial" size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                        <VBox fx:id="swapTracker" alignment="CENTER" managed="false" maxWidth="340.0" prefWidth="340.0" spacing="4.0" visible="false" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 8 12 8 12;">
+                            <VBox.margin>
+                                <Insets top="4.0" />
+                            </VBox.margin>
+                        </VBox>
+                        <Button fx:id="cancelButton" disable="true" managed="false" mnemonicParsing="false" onAction="#onStopButtonClick" prefHeight="24.0" style="-fx-padding: 2 12 2 12;" text="Disconnect" visible="false">
+                            <font>
+                                <Font name="Arial" size="11.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets top="8.0" />
+                            </VBox.margin>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+            <GridPane.margin>
+                <Insets right="5.0" />
+            </GridPane.margin>
+        </VBox>
+
+        <VBox styleClass="app-card" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <children>
+                <Label styleClass="app-card-title" text="Sellers" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="14.0" />
+                    </font>
+                </Label>
+                <PercentTableView fx:id="sellerTable" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets bottom="6.0" top="6.0" />
+                    </VBox.margin>
+                </PercentTableView>
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <Button fx:id="sellerRefreshButton" mnemonicParsing="false" onAction="#onRefreshSellersButtonClick">
+                            <graphic>
+                                <FontAwesomeIconView fill="WHITE" glyphName="REFRESH" />
+                            </graphic>
+                            <HBox.margin>
+                                <Insets right="10.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Label fx:id="refreshSellerText" textFill="#9aa0a6">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="totalXmrForSaleInBtcText" alignment="CENTER_RIGHT" minWidth="-Infinity" textFill="WHITE">
+                            <font>
+                                <Font name="Arial Bold" size="13.0" />
+                            </font>
+                            <padding>
+                                <Insets bottom="4.0" left="5.0" right="5.0" top="4.0" />
+                            </padding>
+                            <HBox.margin>
+                                <Insets right="10.0" />
+                            </HBox.margin>
+                        </Label>
+                        <Label alignment="CENTER_RIGHT" minWidth="-Infinity" textFill="WHITE" visible="false" fx:id="xmrAvgPriceText">
+                            <font>
+                                <Font name="Arial Bold" size="13.0" />
+                            </font>
+                            <padding>
+                                <Insets bottom="4.0" left="5.0" right="5.0" top="4.0" />
+                            </padding>
+                        </Label>
+                    </children>
+                </HBox>
+            </children>
+            <GridPane.margin>
+                <Insets left="5.0" />
+            </GridPane.margin>
+        </VBox>
+    </children>
+    <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES" />
+    </rowConstraints>
+</GridPane>

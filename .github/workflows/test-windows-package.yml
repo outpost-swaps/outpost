@@ -1,0 +1,90 @@
+# Starts the Windows package of a finished release build and prints what it says, by hand.
+# Actions -> Test Windows package -> Run workflow, with the run id of the release build.
+# It does not build, tag or publish anything. It exists because the installed launcher only shows
+# "Failed to launch JVM" and hides the real error; here the same program is started directly so the error is printed.
+name: Test Windows package
+run-name: "Test Windows package from run ${{ inputs.run_id }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run id of the release build whose Windows files should be tested"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: outpost-windows-x64
+          path: pkg
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Unpack the zip and show what is inside
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem pkg -Filter "outpost-*-windows-x64.zip" | Select-Object -First 1
+          Expand-Archive $zip.FullName -DestinationPath unpacked
+          $exe = Get-ChildItem unpacked -Recurse -Filter Outpost.exe | Select-Object -First 1
+          $root = $exe.Directory.FullName
+          "ROOT=$root" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "== launcher folder: $root"
+          Get-ChildItem $root | Format-Table Name, Length -AutoSize | Out-String | Write-Host
+          Write-Host "== app folder (first 40 files)"
+          Get-ChildItem "$root\app" | Select-Object -First 40 | Format-Table Name, Length -AutoSize | Out-String | Write-Host
+          Write-Host "== launcher settings (Outpost.cfg)"
+          Get-Content "$root\app\Outpost.cfg" | ForEach-Object { Write-Host $_ }
+          Write-Host "== bundled Java"
+          & "$root\runtime\bin\java.exe" -version 2>&1 | ForEach-Object { Write-Host $_ }
+      - name: Start the program directly and print its output (default graphics)
+        if: always()
+        shell: pwsh
+        run: |
+          $out = "run-default.out.txt"; $err = "run-default.err.txt"
+          $p = Start-Process "$env:ROOT\runtime\bin\java.exe" -ArgumentList "-cp", "$env:ROOT\app\*", "swap.gui.Main" -RedirectStandardOutput $out -RedirectStandardError $err -PassThru
+          Start-Sleep -Seconds 25
+          if ($p.HasExited) { Write-Host "::error title=windows default::the program exited after less than 25 seconds with code $($p.ExitCode)" } else { Write-Host "::notice title=windows default::the program was still running after 25 seconds"; Stop-Process -Id $p.Id -Force }
+          Write-Host "== standard output (last 40 lines)"; if (Test-Path $out) { Get-Content $out -Tail 40 | ForEach-Object { Write-Host $_ } }
+          Write-Host "== error output (last 80 lines)"; if (Test-Path $err) { Get-Content $err -Tail 80 | ForEach-Object { Write-Host $_ } }
+      - name: Start it again with software graphics and verbose graphics messages
+        if: always()
+        shell: pwsh
+        run: |
+          $out = "run-sw.out.txt"; $err = "run-sw.err.txt"
+          $p = Start-Process "$env:ROOT\runtime\bin\java.exe" -ArgumentList "-Dprism.order=sw", "-Dprism.verbose=true", "-cp", "$env:ROOT\app\*", "swap.gui.Main" -RedirectStandardOutput $out -RedirectStandardError $err -PassThru
+          Start-Sleep -Seconds 25
+          if ($p.HasExited) { Write-Host "::error title=windows software graphics::the program exited after less than 25 seconds with code $($p.ExitCode)" } else { Write-Host "::notice title=windows software graphics::the program was still running after 25 seconds"; Stop-Process -Id $p.Id -Force }
+          Write-Host "== standard output (last 40 lines)"; if (Test-Path $out) { Get-Content $out -Tail 40 | ForEach-Object { Write-Host $_ } }
+          Write-Host "== error output (last 80 lines)"; if (Test-Path $err) { Get-Content $err -Tail 80 | ForEach-Object { Write-Host $_ } }
+      - name: Start the real launcher and look at the window it opens
+        if: always()
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          Add-Type -AssemblyName System.Windows.Forms
+          $app = Start-Process "$env:ROOT\Outpost.exe" -PassThru
+          Start-Sleep -Seconds 25
+          New-Item -ItemType Directory -Force screenshots | Out-Null
+          $vs = [System.Windows.Forms.SystemInformation]::VirtualScreen
+          $bmp = New-Object System.Drawing.Bitmap $vs.Width, $vs.Height
+          $g = [System.Drawing.Graphics]::FromImage($bmp)
+          $g.CopyFromScreen($vs.Left, $vs.Top, 0, 0, $bmp.Size)
+          $bmp.Save((Join-Path $PWD "screenshots\launcher.png"))
+          $app.Refresh()
+          Write-Host "window title of the launcher process: '$($app.MainWindowTitle)'"
+          if ($app.MainWindowTitle -eq "Outpost.exe") { Write-Host "::error title=windows launcher::the launcher is showing an error box (window titled Outpost.exe)" } else { Write-Host "::notice title=windows launcher::window title is '$($app.MainWindowTitle)'" }
+          if (-not $app.HasExited) { Stop-Process -Id $app.Id -Force }
+      - name: Save the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screens-windows
+          path: screenshots/
+          if-no-files-found: ignore

@@ -1,0 +1,111 @@
+# Tests the Linux packages of a finished release build, by hand.
+# Actions -> Test Linux packages -> Run workflow, and give the run id of the release build
+# (the number in the web address of that run). It does not build, tag or publish anything.
+# Every package is tested on its own, so one failure never hides another result.
+name: Test Linux packages
+run-name: "Test Linux packages from run ${{ inputs.run_id }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run id of the release build whose Linux files should be tested"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  ubuntu:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: outpost-linux-x64
+          path: pkg
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Tools for the virtual screen and the app's libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb imagemagick libgtk-3-0 libxtst6 libxxf86vm1 libgl1
+          sudo apt-get install -y libasound2t64 || sudo apt-get install -y libasound2
+      - name: AppImage
+        if: always()
+        run: ./scripts/ci/test-linux-package.sh appimage pkg "${{ matrix.os }}"
+      - name: .deb
+        if: always()
+        run: ./scripts/ci/test-linux-package.sh deb pkg "${{ matrix.os }}"
+      - name: Save the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screens-${{ matrix.os }}
+          path: screenshots/
+          if-no-files-found: ignore
+
+  debian:
+    name: debian-12 (bare container)
+    runs-on: ubuntu-22.04
+    container: debian:12
+    steps:
+      - name: Tools
+        run: |
+          apt-get update
+          apt-get install -y ca-certificates git xvfb imagemagick libgtk-3-0 libxtst6 libxxf86vm1 libgl1 libasound2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: outpost-linux-x64
+          path: pkg
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: AppImage
+        if: always()
+        run: ./scripts/ci/test-linux-package.sh appimage pkg debian-12
+      - name: .deb
+        if: always()
+        run: ./scripts/ci/test-linux-package.sh deb pkg debian-12
+      - name: Save the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screens-debian-12
+          path: screenshots/
+          if-no-files-found: ignore
+
+  fedora:
+    name: fedora-40 (bare container)
+    runs-on: ubuntu-22.04
+    container: fedora:40
+    steps:
+      - name: Tools
+        run: dnf install -y git tar which xorg-x11-server-Xvfb xorg-x11-xauth ImageMagick gtk3 libXtst alsa-lib mesa-libGL
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: outpost-linux-x64
+          path: pkg
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: AppImage
+        if: always()
+        run: ./scripts/ci/test-linux-package.sh appimage pkg fedora-40
+      - name: .rpm
+        if: always()
+        run: ./scripts/ci/test-linux-package.sh rpm pkg fedora-40
+      - name: Save the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screens-fedora-40
+          path: screenshots/
+          if-no-files-found: ignore

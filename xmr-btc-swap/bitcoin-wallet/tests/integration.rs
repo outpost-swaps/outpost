@@ -1,0 +1,347 @@
+mod harness;
+
+use anyhow::Result;
+use bitcoin_harness::BitcoindRpcApi;
+use bitcoin_wallet::{PersisterConfig, PsbtPrevoutVerificationError, WalletBuilder};
+use std::time::Duration;
+use testcontainers::clients::Cli;
+
+async fn sync_until_balance(
+    wallet: &bitcoin_wallet::Wallet,
+    expected_at_least: bitcoin::Amount,
+) -> Result<()> {
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
+    loop {
+        wallet.sync().await?;
+        if wallet.balance().await? >= expected_at_least {
+            return Ok(());
+        }
+
+        if tokio::time::Instant::now() >= deadline {
+            anyhow::bail!(
+                "timed out waiting for wallet balance to reach {} sats",
+                expected_at_least.to_sat()
+            );
+        }
+
+        tokio::time::sleep(Duration::from_millis(500)).await;
+    }
+}
+
+#[derive(Clone, Debug)]
+struct TestSeed([u8; 64]);
+
+impl Default for TestSeed {
+    fn default() -> Self {
+        // Deterministic seed for reproducible integration tests.
+        Self([42u8; 64])
+    }
+}
+
+impl bitcoin_wallet::BitcoinWalletSeed for TestSeed {
+    fn derive_extended_private_key(
+        &self,
+        network: bitcoin::Network,
+    ) -> anyhow::Result<bitcoin::bip32::ExtendedPrivKey> {
+        #[allow(deprecated)]
+        {
+            Ok(bitcoin::bip32::ExtendedPrivKey::new_master(
+                network, &self.0,
+            )?)
+        }
+    }
+
+    fn derive_extended_private_key_legacy(
+        &self,
+        network: bdk::bitcoin::Network,
+    ) -> anyhow::Result<bdk::bitcoin::util::bip32::ExtendedPrivKey> {
+        Ok(bdk::bitcoin::util::bip32::ExtendedPrivKey::new_master(
+            network, &self.0,
+        )?)
+    }
+}
+
+fn init_tracing() {
+    let _ = tracing_subscriber::fmt()
+        .with_env_filter("info,bitcoin_wallet=debug,electrum_pool=debug,testcontainers=info")
+        .with_test_writer()
+        .try_init();
+}
+
+#[tokio::test]
+async fn wallet_syncs_and_receives_funds() -> Result<()> {
+    init_tracing();
+
+    let cli = Cli::default();
+    let env = harness::setup(&cli).await?;
+
+    let wallet = WalletBuilder::<TestSeed>::default()
+        .seed(TestSeed::default())
+        .network(bitcoin::Network::Regtest)
+        .electrum_rpc_urls(vec![env.electrum_url.clone()])
+        .persister(PersisterConfig::InMemorySqlite)
+        .finality_confirmations(1u32)
+        .target_block(1u32)
+        .sync_interval(Duration::from_millis(0))
+        .use_mempool_space_fee_estimation(false)
+        .build()
+        .await?;
+
+    wallet.sync().await?;
+
+    let receive_addr = wallet.new_address().await?;
+
+    // Fund wallet via bitcoind+electrs
+    let amount = bitcoin::Amount::from_sat(50_000);
+    harness::fund_and_mine(&env.bitcoind, receive_addr, amount).await?;
+
+    sync_until_balance(&wallet, amount).await?;
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn wallet_sends_broadcasts_and_confirms() -> Result<()> {
+    init_tracing();
+
+    let cli = Cli::default();
+    let env = harness::setup(&cli).await?;
+
+    let wallet = WalletBuilder::<TestSeed>::default()
+        .seed(TestSeed::default())
+        .network(bitcoin::Network::Regtest)
+        .electrum_rpc_urls(vec![env.electrum_url.clone()])
+        .persister(PersisterConfig::InMemorySqlite)
+        .finality_confirmations(1u32)
+        .target_block(1u32)
+        .sync_interval(Duration::from_millis(0))
+        .use_mempool_space_fee_estimation(false)
+        .build()
+        .await?;
+
+    wallet.sync().await?;
+
+    let receive_addr = wallet.new_address().await?;
+    let funding = bitcoin::Amount::from_sat(100_000);
+    harness::fund_and_mine(&env.bitcoind, receive_addr, funding).await?;
+
+    sync_until_balance(&wallet, funding).await?;
+
+    // Build spend
+    let recipient = env
+        .bitcoind
+        .with_wallet(harness::BITCOIN_TEST_WALLET_NAME)?
+        .getnewaddress(None, None)
+        .await?
+        .require_network(env.bitcoind.network().await?)?;
+
+    let send_amount = bitcoin::Amount::from_sat(25_000);
+    let fee = bitcoin::Amount::from_sat(2_000);
+
+    let psbt = wallet
+        .send_to_address(recipient, send_amount, fee, None, None)
+        .await?;
+
+    let tx = wallet.sign_and_finalize(psbt).await?;
+
+    let other_output_script = tx.output[1].script_pubkey.clone();
+    let (txid, sub) = wallet.broadcast(tx, "it-send").await?;
+
+    // Confirm it
+    let miner_addr = env
+        .bitcoind
+        .with_wallet(harness::BITCOIN_TEST_WALLET_NAME)?
+        .getnewaddress(None, None)
+        .await?
+        .require_network(env.bitcoind.network().await?)?;
+    env.bitcoind.generatetoaddress(1, miner_addr).await?;
+
+    // Sync until electrum indexes the tx and it becomes final.
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
+    loop {
+        wallet.sync().await?;
+        if wallet.get_raw_transaction(txid).await?.is_some() {
+            break;
+        }
+
+        if tokio::time::Instant::now() >= deadline {
+            anyhow::bail!("timed out waiting for raw transaction {txid}");
+        }
+
+        tokio::time::sleep(Duration::from_millis(500)).await;
+    }
+
+    sub.wait_until_final().await?;
+
+    let new_subscription = wallet
+        .subscribe_to(Box::new((txid, other_output_script)))
+        .await;
+    assert!(new_subscription.receiver.borrow().is_confirmed_with(1u32));
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn wallet_rejects_invalid_psbt_prevouts() -> Result<()> {
+    init_tracing();
+    let (cancel, cancellation) = tokio::sync::watch::channel(false);
+
+    let cli = Cli::default();
+    let env = harness::setup(&cli).await?;
+
+    let wallet = WalletBuilder::<TestSeed>::default()
+        .seed(TestSeed::default())
+        .network(bitcoin::Network::Regtest)
+        .electrum_rpc_urls(vec![env.electrum_url.clone()])
+        .persister(PersisterConfig::InMemorySqlite)
+        .finality_confirmations(1u32)
+        .target_block(1u32)
+        .sync_interval(Duration::from_millis(0))
+        .use_mempool_space_fee_estimation(false)
+        .build()
+        .await?;
+
+    wallet.sync().await?;
+
+    let funding = bitcoin::Amount::from_sat(100_000);
+    for count in 1..=2 {
+        let receive_addr = wallet.new_address().await?;
+        harness::fund_and_mine(&env.bitcoind, receive_addr, funding / 2).await?;
+        sync_until_balance(&wallet, funding / 2 * count).await?;
+    }
+
+    let recipient = env
+        .bitcoind
+        .with_wallet(harness::BITCOIN_TEST_WALLET_NAME)?
+        .getnewaddress(None, None)
+        .await?
+        .require_network(env.bitcoind.network().await?)?;
+
+    let psbt = wallet
+        .send_to_address(
+            recipient,
+            bitcoin::Amount::from_sat(75_000),
+            bitcoin::Amount::from_sat(2_000),
+            None,
+            None,
+        )
+        .await?;
+
+    assert_eq!(psbt.inputs.len(), 2);
+    assert_ne!(
+        psbt.inputs[0].witness_utxo.as_ref().unwrap().script_pubkey,
+        psbt.inputs[1].witness_utxo.as_ref().unwrap().script_pubkey,
+    );
+    wallet.verify_psbt_prevouts(&psbt, &cancellation).await?;
+    cancel.send(true)?;
+    assert!(matches!(
+        wallet.verify_psbt_prevouts(&psbt, &cancellation).await,
+        Err(bitcoin_wallet::PsbtPrevoutVerificationError::Cancelled)
+    ));
+    cancel.send(false)?;
+
+    let mut nonexistent_prevout = psbt.clone();
+    nonexistent_prevout.unsigned_tx.input[0].previous_output = bitcoin::OutPoint::null();
+    let error = wallet
+        .verify_psbt_prevouts(&nonexistent_prevout, &cancellation)
+        .await
+        .expect_err("a nonexistent prevout must be rejected");
+    assert!(matches!(
+        error,
+        PsbtPrevoutVerificationError::PrevoutNotFound { .. }
+    ));
+
+    let mut wrong_value = psbt;
+    let witness_utxo = wrong_value.inputs[0]
+        .witness_utxo
+        .as_mut()
+        .expect("wallet PSBT input has a witness UTXO");
+    witness_utxo.value += bitcoin::Amount::from_sat(1);
+
+    let error = wallet
+        .verify_psbt_prevouts(&wrong_value, &cancellation)
+        .await
+        .expect_err("a falsely claimed prevout value must be rejected");
+    assert!(matches!(
+        error,
+        PsbtPrevoutVerificationError::ValueMismatch { .. }
+    ));
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn unused_subscription_is_dropped_after_idle_timeout() -> Result<()> {
+    init_tracing();
+
+    let cli = Cli::default();
+    let env = harness::setup(&cli).await?;
+
+    let idle_timeout = Duration::from_secs(3);
+
+    let wallet = WalletBuilder::<TestSeed>::default()
+        .seed(TestSeed::default())
+        .network(bitcoin::Network::Regtest)
+        .electrum_rpc_urls(vec![env.electrum_url.clone()])
+        .persister(PersisterConfig::InMemorySqlite)
+        .finality_confirmations(1u32)
+        .target_block(1u32)
+        .sync_interval(Duration::from_millis(0))
+        .subscription_idle_timeout(idle_timeout)
+        .use_mempool_space_fee_estimation(false)
+        .build()
+        .await?;
+
+    wallet.sync().await?;
+
+    let receive_addr = wallet.new_address().await?;
+    let funding = bitcoin::Amount::from_sat(100_000);
+    harness::fund_and_mine(&env.bitcoind, receive_addr, funding).await?;
+    sync_until_balance(&wallet, funding).await?;
+
+    let recipient = env
+        .bitcoind
+        .with_wallet(harness::BITCOIN_TEST_WALLET_NAME)?
+        .getnewaddress(None, None)
+        .await?
+        .require_network(env.bitcoind.network().await?)?;
+
+    let psbt = wallet
+        .send_to_address(
+            recipient,
+            bitcoin::Amount::from_sat(25_000),
+            bitcoin::Amount::from_sat(2_000),
+            None,
+            None,
+        )
+        .await?;
+    let tx = wallet.sign_and_finalize(psbt).await?;
+
+    // Broadcasting subscribes to the transaction's status.
+    let (_txid, sub) = wallet.broadcast(tx, "it-idle-cleanup").await?;
+    assert_eq!(wallet.active_subscription_count().await, 1);
+
+    tokio::time::sleep(idle_timeout * 2).await;
+    assert_eq!(
+        wallet.active_subscription_count().await,
+        1,
+        "subscription with a live receiver must not be dropped"
+    );
+
+    drop(sub);
+
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
+    loop {
+        if wallet.active_subscription_count().await == 0 {
+            break;
+        }
+
+        if tokio::time::Instant::now() >= deadline {
+            anyhow::bail!("subscription was not dropped after its last receiver was gone");
+        }
+
+        tokio::time::sleep(Duration::from_millis(250)).await;
+    }
+
+    Ok(())
+}

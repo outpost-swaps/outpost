@@ -1,0 +1,62 @@
+Outpost
+=======
+
+Outpost is free software under the GNU General Public License, version 3 (see LICENSE).
+It is built from the work of other projects. This file names them and the license each one
+publishes. The license texts and copyright lines in the source files and in each project's own
+repository are the authority. Where a package carries its own headers, they were left unchanged.
+
+Swap engine (Rust, in xmr-btc-swap/)
+------------------------------------
+- COMIT xmr-btc-swap ("The COMIT guys"), GNU GPL v3. The atomic swap protocol and the original engine.
+- Eigenwallet core (the maintained fork of xmr-btc-swap), GNU GPL v3. Protocol 5 (swap-setup 5.0.0)
+  follows its 5.0.2 release. A reference copy of that release is kept in xmr-btc-swap/protocol-v5/
+  (its swap-core, swap-p2p, swap-machine, swap-db, swap-env, swap-feed, swap-fs, swap-serde and related
+  crates). The bitcoin-wallet, electrum-pool and utxo-ownership-proof crates in xmr-btc-swap/ were taken
+  from Eigenwallet and adapted.
+- The Rust crates the engine depends on are listed with their versions in Cargo.lock.
+  Their licenses are in each crate's own repository. A few are fetched from git forks at the revisions
+  pinned in Cargo.lock: comit-network/monero-rs, comit-network/secp256kfun, kayabaNerve/monero-oxide,
+  eira-fransham/crunchy, and the eigenwallet/arti branch used by the protocol 5 workspace.
+
+Bundled Java libraries (libs/darkjar/)
+--------------------------------------
+libs/darkjar is the darkjar module of Ashigaru Terminal (Ashigaru/Ashigaru-Terminal, version 0.2.41, the
+v1.0.0 release, commit 0bbed17ea5; GNU GPL v3), with the Whirlpool reconnect fix from Ashigaru Desktop
+(commit 0577558) applied unchanged. It collects the code listed below. What Outpost changed in it:
+- com/samourai/wallet/api/backend/BackendApi.java: added fetchFeesEstimator() and its /fees/estimator
+  URL, a request for the Dojo's next-block fee estimates.
+- com/samourai/whirlpool/client/wallet/beans/WhirlpoolAccount.java: a comment now points at the README.
+- A few names and comments in com/sparrowwallet/nightjar were updated for the project rename.
+Everything else is as published.
+
+- bitcoinj (org.bitcoinj), Apache License 2.0. Source headers are kept.
+- Whirlpool, Soroban, STOMP and Tor client code from Samourai Wallet (com.samourai). Some files carry
+  Apache License 2.0 headers. The rest follow the license of the upstream Samourai repositories.
+- Nightjar packaging and helper classes by Sparrow Wallet (com.sparrowwallet), and Toucan
+  (com.sparrowwallet:toucan), under the licenses Sparrow Wallet publishes.
+- Zeroleak classes (com.zeroleak), small helpers kept with their original headers.
+- Third-party jars darkjar depends on: BouncyCastle (MIT license), Guava, Jackson, RxJava and
+  Commons Codec (Apache License 2.0), Logback (EPL 1.0 and LGPL 2.1), SLF4J (MIT license), OkHttp
+  (Apache License 2.0), and others listed in libs/darkjar/build.gradle.
+
+Desktop app (Java, in app/)
+---------------------------
+- JavaFX (OpenJFX), GNU GPL v2 with the Classpath Exception.
+- AtlantaFX, MIT license. ControlsFX, BSD 3-Clause. RichTextFX, BSD 2-Clause (dual with GPL v2 and
+  the Classpath Exception). FontAwesomeFX, Apache License 2.0. ZXing, Apache License 2.0.
+- netlayer (Tor for Java, Berndpruenster and the pokkst fork) and the Tor binaries it starts.
+  Tor is under the BSD 3-Clause license.
+- The full list of Java dependencies and versions is in app/build.gradle.
+
+Programs shipped beside the app
+-------------------------------
+- monero-wallet-rpc from the Monero Project, BSD 3-Clause. It is not part of the package. Outpost
+  downloads the unmodified upstream release (v0.18.5.4) on first start and checks its SHA-256.
+- The Monero and Bitcoin word lists in the BIP 39 mnemonic code come from the BIP 39 specification
+  (MIT license).
+
+Names
+-----
+Bitcoin, Monero, Samourai, Whirlpool, Sparrow, Ashigaru and Eigenwallet are names of other projects
+and are used only to say what Outpost works with. Outpost is not affiliated with them.

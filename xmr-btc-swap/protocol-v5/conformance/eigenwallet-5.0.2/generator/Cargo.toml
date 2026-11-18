@@ -1,0 +1,13 @@
+[package]
+name = "conformance-vectors"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+anyhow = { workspace = true }
+bitcoin = { workspace = true }
+bitcoin-wallet = { path = "../bitcoin-wallet" }
+ecdsa_fun = { workspace = true }
+serde_json = { workspace = true }
+swap-core = { path = "../swap-core" }

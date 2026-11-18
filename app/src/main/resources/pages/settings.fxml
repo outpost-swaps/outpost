@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<!-- minHeight=0 + ScrollPane(minHeight 0): the page's computed minimum must
+     never feed the main GridPane's row math, otherwise (mainPane is
+     vertical-CENTER) an oversized min clips the nav off the top and squishes
+     the logs row at the bottom. With the compressed card layout the content
+     fits the viewport, so the scrollbar stays hidden in normal use - the
+     ScrollPane is just the safety net. prefHeight pinned to a whole pixel
+     only stabilizes row math.
+     BUDGET (measured 2026-11-09): at the default 1240x770 window the page gets
+     518 px (770 - 52 nav - 200 logs), about 508 px of viewport. The cards sit in a
+     2 x 3 grid that lines up row by row: Dojo | ASB Trading, Electrum | Monero node,
+     Wallet | Network. Row 0 keeps its own height and rows 1 and 2 share the rest, so
+     the bottom of the page lines up with the other pages. The control columns line up
+     across the cards (labels 140 px, first control at the same x, second column under
+     "Data Folder" on the left and under Auto Tx0 / Pool Size on the right). The ASB
+     Trading card needs at least about 478 px of width. Every extra row costs about
+     30 px, so a new setting goes into free space on an existing row, not into a new row, or the page
+     overflows, clips its bottom card and the scroll bar appears. -->
+<GridPane fx:id="settingsPane" minHeight="0.0" prefHeight="564.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="swap.gui.controller.pages.SettingsController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" minHeight="0.0" styleClass="settings-scroll" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <content>
+                <GridPane hgap="10.0" vgap="8.0" minWidth="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50.0" />
+                        <ColumnConstraints percentWidth="50.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="ALWAYS" />
+                        <RowConstraints vgrow="ALWAYS" />
+                    </rowConstraints>
+                    <children>
+
+                        <VBox styleClass="settings-card" spacing="6.0" maxHeight="1.7976931348623157E308" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.vgrow="NEVER">
+                            <children>
+                                <Label styleClass="settings-card-title" text="Dojo" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="dojoField" editable="false" focusTraversable="false" prefHeight="26.0" maxWidth="1.7976931348623157E308" />
+                                <HBox alignment="CENTER_LEFT" spacing="16.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Button fx:id="testDojoButton" mnemonicParsing="false" onAction="#onTestDojoClick" prefWidth="132.0" text="Test connection" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Button mnemonicParsing="false" onAction="#onChangeDojoClick" prefWidth="132.0" text="Change..." />
+                                    </children>
+                                </HBox>
+                                <Label text="The Bitcoin backend for your wallet: balances, fee estimates and swap funding. A changed Dojo is used after the next start." wrapText="true" textFill="#9a9a9a" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                                    <font>
+                                        <Font name="Arial" size="13.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                        <VBox styleClass="settings-card" spacing="6.0" maxHeight="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.vgrow="NEVER">
+                            <children>
+                                <Label styleClass="settings-card-title" text="ASB Trading" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <HBox alignment="TOP_LEFT" spacing="12.0">
+                                    <children>
+                                        <VBox spacing="6.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <Label text="ASB Min BTC" minWidth="140.0" prefWidth="140.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="asbMinBtc" prefHeight="30.0" prefWidth="130.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                            <padding>
+                                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                            </padding>
+                                                        </TextField>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <Label text="ASB Max BTC" minWidth="140.0" prefWidth="140.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="asbMaxBtc" prefHeight="30.0" prefWidth="130.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                            <padding>
+                                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                            </padding>
+                                                        </TextField>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <Label text="ASB Rate Fee" minWidth="140.0" prefWidth="140.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Spinner fx:id="asbRateFee" editable="true" prefHeight="30.0" prefWidth="130.0" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <Label text="ASB Manual Rate" minWidth="140.0" prefWidth="140.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="asbManualRate" prefHeight="30.0" prefWidth="130.0" promptText="spot + fee">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                            <padding>
+                                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                            </padding>
+                                                            <tooltip>
+                                                                <Tooltip text="Fixed XMR price in BTC per 1 XMR, overriding spot + fee. Leave empty to track the market." />
+                                                            </tooltip>
+                                                        </TextField>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="6.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0" prefHeight="30.0">
+                                                    <children>
+                                                        <Label text="ASB Auto Tx0" minWidth="140.0" prefWidth="140.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <CheckBox fx:id="autoTx0" prefWidth="35.0" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0" prefHeight="30.0">
+                                                    <children>
+                                                        <Label text="Pool Size" minWidth="140.0" prefWidth="140.0">
+                                                            <font>
+                                                                <Font name="Arial" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <ComboBox fx:id="poolSize" editable="false" minWidth="130.0" prefWidth="130.0" maxWidth="130.0" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0" prefHeight="30.0">
+                                                    <children>
+                                                        <Label minWidth="140.0" prefWidth="140.0" />
+                                                        <Button fx:id="updateButton" disable="true" mnemonicParsing="false" onAction="#onSaveAsbSettingsClick" prefWidth="130.0" text="Save">
+                                                            <tooltip>
+                                                                <Tooltip text="Saves what you changed in this card. Trading values (Min, Max, Rate Fee, Manual Rate) restart the ASB so they take effect at once; Auto Tx0 and Pool Size switch the mixer straight away." />
+                                                            </tooltip>
+                                                        </Button>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox styleClass="settings-card" spacing="6.0" maxHeight="1.7976931348623157E308" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                            <children>
+                                <Label styleClass="settings-card-title" text="Electrum" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="ASB Electrum Server" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER_LEFT" spacing="12.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <ComboBox fx:id="electrumServer" minWidth="100.0" prefWidth="230.0" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                                <Button mnemonicParsing="false" onAction="#onClickAddElectrumNode" prefWidth="132.0" text="Add Server" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="Server Type" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <RadioButton fx:id="publicElectrumServer" text="Public server" minWidth="130.0" prefWidth="130.0" selected="true">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="electrumServerType" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <RadioButton fx:id="ownElectrumServer" text="Personal server" toggleGroup="$electrumServerType" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Button fx:id="testElectrumButton" mnemonicParsing="false" onAction="#onTestElectrumClick" prefWidth="132.0" minWidth="132.0" text="Test connection" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="Public server options" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <CheckBox fx:id="electrumFailover" text="Electrum Failover" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox styleClass="settings-card" spacing="6.0" maxHeight="1.7976931348623157E308" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+                            <children>
+                                <Label styleClass="settings-card-title" text="Wallet" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="BTC Wallet Seed" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Button mnemonicParsing="false" onAction="#onShowBtcSeedClick" prefWidth="132.0" text="Show Seed" />
+                                        <Label text="BTC Account ZPUBs" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Button mnemonicParsing="false" onAction="#onShowAccountZpubsClick" prefWidth="132.0" text="Show ZPUBs" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="XMR ASB Seed" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Button mnemonicParsing="false" onAction="#onShowAsbXmrSeedClick" prefWidth="132.0" text="Show Seed" />
+                                        <Label text="Data Folder" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Button mnemonicParsing="false" onAction="#openSwapDir" prefWidth="132.0" text="Open" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox styleClass="settings-card" spacing="6.0" maxHeight="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                            <children>
+                                <Label styleClass="settings-card-title" text="Monero" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="XMR Node" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER_LEFT" spacing="12.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <ComboBox fx:id="xmrNode" minWidth="100.0" prefWidth="230.0" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                                <Button mnemonicParsing="false" onAction="#onClickAddMoneroNode" prefWidth="132.0" text="Add Node" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="Node Type" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <RadioButton fx:id="publicMoneroNode" text="Public node" minWidth="130.0" prefWidth="130.0" selected="true">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="moneroNodeType" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <RadioButton fx:id="ownMoneroNode" text="Personal node" toggleGroup="$moneroNodeType" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Button fx:id="testMoneroButton" mnemonicParsing="false" onAction="#onTestMoneroClick" prefWidth="132.0" minWidth="132.0" text="Test connection" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="Public node options" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <CheckBox fx:id="daemonFailover" text="Daemon Failover" minWidth="130.0" prefWidth="130.0" />
+                                        <CheckBox fx:id="trustDaemon" text="Trust Daemon" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox styleClass="settings-card" spacing="6.0" maxHeight="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+                            <children>
+                                <Label styleClass="settings-card-title" text="Network" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="Network" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="network" editable="false" prefHeight="33.0" minHeight="33.0" prefWidth="130.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </TextField>
+                                        <Label text="Tor" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER" spacing="6.0" styleClass="status-pill" prefWidth="132.0" minWidth="132.0" maxWidth="132.0" prefHeight="33.0" minHeight="33.0" maxHeight="33.0">
+                                            <children>
+                                                <ImageView fitHeight="14.0" fitWidth="14.0" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../images/tor.png" />
+                                                    </image>
+                                                </ImageView>
+                                                <Label text="Always on" styleClass="status-pill-text">
+                                                    <tooltip>
+                                                        <Tooltip text="Every connection goes through Tor. There is no clearnet fallback, and it cannot be turned off." />
+                                                    </tooltip>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" minHeight="30.0" prefHeight="30.0">
+                                    <children>
+                                        <Label text="Proxy" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="proxy" editable="false" prefHeight="33.0" minHeight="33.0" prefWidth="130.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </TextField>
+                                        <Label text="Rendezvous" minWidth="140.0" prefWidth="140.0">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Button fx:id="rendezvousButton" mnemonicParsing="false" onAction="#onShowRendezvousPeersClick" prefWidth="132.0" text="Manage..." />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </GridPane>
+            </content>
+        </ScrollPane>
+    </children>
+</GridPane>

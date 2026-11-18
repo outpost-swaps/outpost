@@ -1,0 +1,25 @@
+#!/bin/sh
+# postinst script for outpost
+# jpackage's own script runs xdg-desktop-menu with "set -e" and no fallback, so on a system that has no
+# system menu folders (a minimal install, a window-manager-only setup) the whole installation fails and
+# the package is left half-configured. Adding the menu entry is a convenience, so it must never do that.
+set -e
+
+case "$1" in
+    configure)
+        if ! xdg-desktop-menu install /opt/outpost/lib/outpost-Outpost.desktop; then
+            echo "Outpost: the application menu entry could not be added on this system." >&2
+            echo "Outpost: start it with /opt/outpost/bin/Outpost" >&2
+        fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

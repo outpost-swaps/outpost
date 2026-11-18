@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane alignment="CENTER" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="swap.gui.controller.PairingController">
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints hgrow="ALWAYS" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints vgrow="ALWAYS" />
+    </rowConstraints>
+    <children>
+        <ImageView fx:id="torImage" fitHeight="20.0" fitWidth="20.0" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+            <image>
+                <Image url="@images/tor.png" />
+            </image>
+            <viewport>
+                <Rectangle2D width="256.0" />
+            </viewport>
+            <GridPane.margin>
+                <Insets right="12.0" top="12.0" />
+            </GridPane.margin>
+        </ImageView>
+        <VBox alignment="CENTER" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <ImageView fx:id="swapsLogo" fitWidth="460.0" preserveRatio="true" translateX="7.0" VBox.vgrow="NEVER">
+                <image>
+                    <Image url="@images/outpost-lockup.png" />
+                </image>
+            </ImageView>
+            <!-- the form, the unlock progress AND the two start buttons share one spot. The form always
+                 holds its height (it is only made invisible on the first screen), so the first screen and
+                 the unlock screen are the same height: the logo and the first control sit in the same place -->
+            <StackPane maxWidth="320.0" alignment="TOP_CENTER">
+                <VBox.margin>
+                    <Insets top="20.0" />
+                </VBox.margin>
+                <children>
+                    <VBox fx:id="formBox" alignment="TOP_CENTER" spacing="20.0">
+                        <children>
+                            <PasswordField fx:id="walletPassphraseTextField" maxWidth="320" prefWidth="320" prefHeight="38.0" minHeight="38.0" maxHeight="38.0" promptText="Wallet passphrase">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </PasswordField>
+
+                            <VBox fx:id="pairRow" alignment="CENTER" spacing="12.0" maxWidth="320.0" prefWidth="320.0">
+                                <children>
+                                    <Button fx:id="pairingButton" onAction="#onPairingButtonClick" text="Pair" styleClass="dialog-button-danger, start-button-primary" maxWidth="1.7976931348623157E308" prefHeight="38.0" minHeight="38.0" maxHeight="38.0" />
+                                    <CheckBox fx:id="startAsbCheckbox" mnemonicParsing="false" text="Start selling Monero" textFill="#9aa0a6">
+                                        <tooltip>
+                                            <Tooltip text="Starts the ASB (Automated Swap Backend): your app sells Monero to buyers as a market maker. You can also start it later from the Liquidity page." />
+                                        </tooltip>
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </CheckBox>
+                                </children>
+                            </VBox>
+                        </children>
+                    </VBox>
+                    <VBox fx:id="startButtonsRow" alignment="CENTER" spacing="12.0" managed="false" visible="false">
+                        <children>
+                            <Button fx:id="connectButton" onAction="#onConnectClick" text="Connect wallet" styleClass="dialog-button-danger, start-button-primary" managed="false" visible="false" />
+                            <Button fx:id="createButton" onAction="#onCreateClick" text="Create new wallet" styleClass="dialog-button-secondary, start-button-secondary" managed="false" visible="false" />
+                        </children>
+                    </VBox>
+                    <VBox fx:id="stageBox" alignment="CENTER_LEFT" spacing="6.0" maxWidth="290.0" managed="false" visible="false">
+                        <children>
+                            <Label fx:id="stageCheck" textFill="#919191" minWidth="-Infinity" />
+                            <Label fx:id="stageSetup" textFill="#919191" minWidth="-Infinity" />
+                            <Label fx:id="stageDownload" textFill="#919191" minWidth="-Infinity" />
+                            <Label fx:id="stageOpen" textFill="#919191" minWidth="-Infinity" />
+                            <ProgressBar fx:id="rpcDownloadProgress" maxWidth="1.7976931348623157E308" prefHeight="8.0" progress="-1.0">
+                                <VBox.margin>
+                                    <Insets top="8.0" />
+                                </VBox.margin>
+                            </ProgressBar>
+                        </children>
+                    </VBox>
+                </children>
+            </StackPane>
+
+            <Label fx:id="startText" minHeight="22.0" prefHeight="22.0" maxHeight="22.0" textFill="#9aa0a6">
+                <font>
+                    <Font name="Arial" size="14.0" />
+                </font>
+            </Label>
+        </VBox>
+    </children>
+</GridPane>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="560.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="swap.gui.controller.popups.PopupConfirmWithdraw">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="dialog-scroll"
+                style="-fx-background: #0e0e0e; -fx-background-color: #0e0e0e;"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+        <content>
+            <VBox alignment="TOP_LEFT" spacing="16.0" style="-fx-background-color: #0e0e0e;">
+                <padding>
+                    <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+                </padding>
+                <children>
+                    <VBox alignment="TOP_LEFT" spacing="2.0">
+                        <children>
+                            <Label text="Confirm withdrawal" textFill="#919191">
+                                <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <Label fx:id="amountHeadline" text="" textFill="#e7eaf0">
+                                <font>
+                                    <Font name="Arial Bold" size="28.0" />
+                                </font>
+                            </Label>
+                            <Label fx:id="destinationHeadline" text="" textFill="#919191" wrapText="true">
+                                <font>
+                                    <Font name="Menlo" size="12.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+
+                    <VBox spacing="8.0" styleClass="app-card">
+                        <children>
+                            <GridPane hgap="24.0" vgap="7.0">
+                                <columnConstraints>
+                                    <ColumnConstraints minWidth="90.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <children>
+                                    <Label text="From" textFill="#919191" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                    <Label fx:id="fromValue" textFill="#d0d0d0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                    <Label text="Fee" textFill="#919191" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                    <Label fx:id="feeValue" textFill="#d0d0d0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label text="Total" textFill="#919191" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                    <Label fx:id="totalValue" textFill="#d0d0d0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label text="Rate" textFill="#919191" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                    <Label fx:id="rateValue" textFill="#d0d0d0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                </children>
+                            </GridPane>
+                        </children>
+                    </VBox>
+
+                    <TitledPane fx:id="detailsPane" text="Transaction details" expanded="false" styleClass="dialog-section-title">
+                        <content>
+                            <TextArea fx:id="txStructure" editable="false" wrapText="false" prefHeight="170.0"
+                                      styleClass="tx-structure" />
+                        </content>
+                    </TitledPane>
+
+                    <VBox fx:id="warningBox" spacing="4.0" styleClass="dialog-warning">
+                        <children>
+                            <Label text="PRIVACY" styleClass="dialog-warning-title" />
+                            <Label fx:id="warningText" text="" wrapText="true" styleClass="dialog-warning-body">
+                                <font>
+                                    <Font name="Arial" size="12.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+
+                    <Label text="Sending broadcasts the transaction immediately."
+                           textFill="#919191" wrapText="true" maxWidth="Infinity"
+                           HBox.hgrow="ALWAYS">
+                        <font>
+                            <Font name="Arial" size="11.0" />
+                        </font>
+                        <VBox.margin>
+                            <Insets top="4.0" />
+                        </VBox.margin>
+                    </Label>
+
+                    <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                        <children>
+                            <Button fx:id="cancelButton" onAction="#onCancel" text="Cancel"
+                                    styleClass="dialog-button-secondary" />
+                            <Button fx:id="confirmButton" onAction="#onConfirm" text="Send"
+                                    styleClass="dialog-button-danger" />
+                        </children>
+                    </HBox>
+                </children>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</AnchorPane>

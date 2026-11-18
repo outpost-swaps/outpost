@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<!-- prefHeight pinned to a whole pixel: the computed pref (658.5, from
+     fractional font metrics) leaked a 0.5px row-height wobble into the main
+     GridPane, shifting the logs box on every tab switch. The page is
+     anchored top+bottom, so this value only stabilizes row sizing. -->
+<GridPane fx:id="withdrawPane" prefHeight="658.0" hgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="swap.gui.controller.pages.WithdrawController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="ALWAYS" />
+    </rowConstraints>
+    <children>
+        <!-- Full-width warning, spans both columns. TextFlow handles wrapping correctly
+             (unlike Label which keeps its natural unwrapped width even in GridPane cells).
+             Slight negative top margin: the content pane's own top padding plus this
+             margin reads even with the gap below. -->
+        <TextFlow GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0"
+                  GridPane.hgrow="ALWAYS" GridPane.fillWidth="true">
+            <GridPane.margin>
+                <Insets top="-4.0" bottom="8.0" />
+            </GridPane.margin>
+            <children>
+                <Text text="This is a swaps tool, not a full wallet. Select specific UTXOs on the right to control which coins you spend. If you select 2+ UTXOs from the same account, they will be merged and linked on-chain."
+                      fill="#f0ad4e" style="-fx-font-weight: bold; -fx-font-size: 12;" />
+            </children>
+        </TextFlow>
+
+        <!-- Balances card, spans both columns: SWAPS_* row first (primary), then legacy accounts.
+             All six chips share one prefWidth so the labels' natural widths can't skew the
+             rendered sizes (hgrow alone only equalizes the leftover space, not the base). -->
+        <VBox styleClass="app-card" spacing="6.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS">
+            <GridPane.margin>
+                <Insets bottom="10.0" />
+            </GridPane.margin>
+            <children>
+                <Label styleClass="app-card-title" text="Balances" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="14.0" />
+                    </font>
+                </Label>
+                <HBox alignment="CENTER" spacing="6.0">
+                    <children>
+                        <HBox alignment="CENTER" spacing="6.0" prefWidth="380.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #2a1416; -fx-background-radius: 4; -fx-border-color: #c0201a; -fx-border-radius: 4; -fx-padding: 5 10 5 10;">
+                            <children>
+                                <Label text="SWAPS_DEPOSIT" textFill="#e89595"><font><Font name="Arial Bold" size="10.0" /></font></Label>
+                                <Label fx:id="balSwapsDepositSummary" text="—" textFill="#ffe6e6"><font><Font name="Menlo" size="12.0" /></font></Label>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="6.0" prefWidth="380.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #2a1416; -fx-background-radius: 4; -fx-border-color: #c0201a; -fx-border-radius: 4; -fx-padding: 5 10 5 10;">
+                            <children>
+                                <Label text="SWAPS_REFUNDS" textFill="#e89595"><font><Font name="Arial Bold" size="10.0" /></font></Label>
+                                <Label fx:id="balSwapsRefundsSummary" text="—" textFill="#ffe6e6"><font><Font name="Menlo" size="12.0" /></font></Label>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="6.0" prefWidth="380.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #2a1416; -fx-background-radius: 4; -fx-border-color: #c0201a; -fx-border-radius: 4; -fx-padding: 5 10 5 10;">
+                            <children>
+                                <Label text="SWAPS_ASB" textFill="#e89595"><font><Font name="Arial Bold" size="10.0" /></font></Label>
+                                <Label fx:id="balSwapsAsbSummary" text="—" textFill="#ffe6e6"><font><Font name="Menlo" size="12.0" /></font></Label>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" spacing="6.0">
+                    <children>
+                        <HBox alignment="CENTER" spacing="6.0" prefWidth="380.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 5 10 5 10;">
+                            <children>
+                                <Label text="DEPOSIT" textFill="#9aa0a6"><font><Font name="Arial Bold" size="10.0" /></font></Label>
+                                <Label fx:id="balDepositSummary" text="—" textFill="#e7eaf0"><font><Font name="Menlo" size="12.0" /></font></Label>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="6.0" prefWidth="380.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 5 10 5 10;">
+                            <children>
+                                <Label text="POSTMIX" textFill="#9aa0a6"><font><Font name="Arial Bold" size="10.0" /></font></Label>
+                                <Label fx:id="balPostmixSummary" text="—" textFill="#e7eaf0"><font><Font name="Menlo" size="12.0" /></font></Label>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="6.0" prefWidth="380.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 5 10 5 10;">
+                            <children>
+                                <Label text="BADBANK" textFill="#9aa0a6"><font><Font name="Arial Bold" size="10.0" /></font></Label>
+                                <Label fx:id="balBadbankSummary" text="—" textFill="#e7eaf0"><font><Font name="Menlo" size="12.0" /></font></Label>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+
+        <!-- Withdraw form card -->
+        <VBox styleClass="app-card" spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <children>
+                <Label styleClass="app-card-title" text="Withdraw" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="14.0" />
+                    </font>
+                </Label>
+                <Label text="Bitcoin Address">
+                    <font><Font name="Arial" size="14.0" /></font>
+                </Label>
+                <TextField fx:id="btcAddressTextField" promptText="bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4" prefHeight="34.0" maxWidth="Infinity">
+                    <font><Font name="Arial" size="12.0" /></font>
+                    <padding><Insets bottom="5.0" left="5.0" right="5.0" top="5.0" /></padding>
+                </TextField>
+                <HBox alignment="CENTER_LEFT" spacing="6.0">
+                    <VBox.margin><Insets top="4.0" /></VBox.margin>
+                    <children>
+                        <Label text="From account" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                            <font><Font name="Arial" size="14.0" /></font>
+                        </Label>
+                        <Label fx:id="selectedAccountBalance" text="Balance: —" textFill="#9aa0a6">
+                            <font><Font name="Arial" size="12.0" /></font>
+                        </Label>
+                    </children>
+                </HBox>
+                <ComboBox fx:id="whirlpoolAccount" prefHeight="34.0" maxWidth="Infinity" />
+                <Label text="Amount (BTC)">
+                    <font><Font name="Arial" size="14.0" /></font>
+                    <VBox.margin><Insets top="4.0" /></VBox.margin>
+                </Label>
+                <GridPane hgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                    </columnConstraints>
+                    <children>
+                        <TextField fx:id="btcAmountTextField" promptText="0.001" prefHeight="34.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="0" GridPane.columnSpan="4">
+                            <font><Font name="Arial" size="12.0" /></font>
+                            <padding><Insets bottom="5.0" left="5.0" right="5.0" top="5.0" /></padding>
+                        </TextField>
+                        <Button fx:id="sendAllButton" mnemonicParsing="false" onAction="#onSendAllButtonClick" prefHeight="34.0" maxWidth="1.7976931348623157E308" text="Send All" GridPane.columnIndex="4">
+                            <tooltip><Tooltip text="Sweep everything: all ticked UTXOs, or the full account balance when none are ticked. The exact fee is computed at confirm time and deducted from the amount sent." /></tooltip>
+                        </Button>
+                    </children>
+                </GridPane>
+                <Label text="Fee rate (sat/vbyte)">
+                    <font><Font name="Arial" size="14.0" /></font>
+                    <VBox.margin><Insets top="4.0" /></VBox.margin>
+                </Label>
+                <Label text="Next-block estimate:" textFill="#9aa0a6">
+                    <font><Font name="Arial" size="11.0" /></font>
+                </Label>
+                <!-- Five equal columns on an 8px hgap, shared geometry across
+                     the three grids below: the fee row fills the full card
+                     width, Send All occupies the exact same column as the
+                     manual fee field, and Withdraw spans the first two columns
+                     so its right edge is flush with the 50% button's. -->
+                <GridPane hgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                    </columnConstraints>
+                    <children>
+                        <Button fx:id="feeEstimate99Button" mnemonicParsing="false" onAction="#onFeeEstimateClick" prefHeight="56.0" maxWidth="1.7976931348623157E308" text="99%&#10;– sat" GridPane.columnIndex="0">
+                            <tooltip><Tooltip text="Next-block fee estimate at 99% confirmation probability, from your own Dojo node. Selected by default. The rate shown updates once the estimates load; clicking fills the fee field." /></tooltip>
+                        </Button>
+                        <Button fx:id="feeEstimate50Button" mnemonicParsing="false" onAction="#onFeeEstimateClick" prefHeight="56.0" maxWidth="1.7976931348623157E308" text="50%&#10;– sat" GridPane.columnIndex="1">
+                            <tooltip><Tooltip text="Next-block fee estimate at 50% confirmation probability, from your own Dojo node." /></tooltip>
+                        </Button>
+                        <Button fx:id="feeEstimate10Button" mnemonicParsing="false" onAction="#onFeeEstimateClick" prefHeight="56.0" maxWidth="1.7976931348623157E308" text="10%&#10;– sat" GridPane.columnIndex="2">
+                            <tooltip><Tooltip text="Next-block fee estimate at 10% confirmation probability, from your own Dojo node. Cheapest; may take a while." /></tooltip>
+                        </Button>
+                        <Button fx:id="manualFeeButton" mnemonicParsing="false" onAction="#onManualFeeClick" prefHeight="56.0" maxWidth="1.7976931348623157E308" text="Manual" GridPane.columnIndex="3">
+                            <tooltip><Tooltip text="Skip the estimates and type the fee rate yourself in the field to the right." /></tooltip>
+                        </Button>
+                        <TextField fx:id="btcFeeTextField" promptText="sat/vB" prefHeight="56.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4">
+                            <font><Font name="Arial" size="12.0" /></font>
+                        </TextField>
+                    </children>
+                </GridPane>
+                <GridPane hgap="8.0">
+                    <VBox.margin><Insets top="8.0" /></VBox.margin>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="104.0" />
+                    </columnConstraints>
+                    <children>
+                        <Button fx:id="withdrawButton" styleClass="dialog-button-danger" mnemonicParsing="false" onAction="#onWithdrawButtonClick" prefHeight="48.0" maxWidth="1.7976931348623157E308" text="Withdraw" GridPane.columnIndex="0" GridPane.columnSpan="2" />
+                    </children>
+                </GridPane>
+            </children>
+        </VBox>
+
+        <!-- UTXO table card -->
+        <VBox styleClass="app-card" spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="6.0">
+                    <children>
+                        <Label styleClass="app-card-title" text="UTXOs in selected account" textFill="#c0201a" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                            <font><Font name="Arial Bold" size="14.0" /></font>
+                        </Label>
+                        <Label fx:id="utxoTableHint" text="Unchecked = automatic selection" textFill="#9aa0a6">
+                            <font><Font name="Arial" size="11.0" /></font>
+                        </Label>
+                    </children>
+                </HBox>
+                <TableView fx:id="utxoTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="utxoSelectColumn" prefWidth="44.0" text="" />
+                        <TableColumn fx:id="utxoTxidColumn" prefWidth="120.0" text="TxID" />
+                        <TableColumn fx:id="utxoVoutColumn" prefWidth="48.0" text="vout" />
+                        <TableColumn fx:id="utxoValueColumn" prefWidth="120.0" text="Value (BTC)" />
+                        <TableColumn fx:id="utxoConfColumn" prefWidth="56.0" text="Conf" />
+                        <TableColumn fx:id="utxoAddrColumn" prefWidth="150.0" text="Address" />
+                    </columns>
+                </TableView>
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                    <children>
+                        <Button fx:id="utxoSelectAllButton" mnemonicParsing="false" onAction="#onUtxoSelectAllClick" text="Select All" />
+                        <Button fx:id="utxoClearButton" mnemonicParsing="false" onAction="#onUtxoClearClick" text="Clear" />
+                        <Label fx:id="utxoSelectionSummary" text="0 selected, 0.00000000 BTC" textFill="#9aa0a6" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</GridPane>

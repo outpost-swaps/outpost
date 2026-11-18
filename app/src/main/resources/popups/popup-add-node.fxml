@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefWidth="560.0" spacing="14.0" style="-fx-background-color: #0e0e0e;"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="swap.gui.controller.popups.PopupAddNode">
+    <padding>
+        <Insets bottom="22.0" left="28.0" right="28.0" top="22.0" />
+    </padding>
+    <children>
+        <VBox spacing="4.0">
+            <children>
+                <Label fx:id="titleLabel" text="Add Node" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label fx:id="subtitleLabel" styleClass="import-hint" wrapText="true" />
+            </children>
+        </VBox>
+
+        <VBox spacing="10.0" styleClass="app-card">
+            <children>
+                <HBox spacing="10.0" alignment="BOTTOM_LEFT">
+                    <children>
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="ADDRESS" styleClass="dialog-section-title" />
+                                <TextField fx:id="urlText" maxWidth="1.7976931348623157E308" promptText="http://" />
+                            </children>
+                        </VBox>
+                        <VBox fx:id="portBox" spacing="4.0" minWidth="100.0" prefWidth="100.0" maxWidth="100.0">
+                            <children>
+                                <Label fx:id="portFieldLabel" text="PORT" styleClass="dialog-section-title" />
+                                <TextField fx:id="portText" maxWidth="1.7976931348623157E308" promptText="42069" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <CheckBox fx:id="ownNodeCheck" text="This is a personal node" visible="false" managed="false" />
+                <Label fx:id="ownHint" styleClass="import-hint" wrapText="true" visible="false" managed="false"
+                       text="Tick this for a node you run or trust. It then appears under Personal in Settings instead of Public. Local and .onion addresses are ticked for you." />
+            </children>
+        </VBox>
+
+        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+            <children>
+                <Button fx:id="cancelButton" onAction="#closeWindow" text="Cancel" styleClass="dialog-button-secondary" cancelButton="true" />
+                <Button fx:id="saveButton" onAction="#save" text="Save" styleClass="dialog-button-danger" defaultButton="true" disable="true" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

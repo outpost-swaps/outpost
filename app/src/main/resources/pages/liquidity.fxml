@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane fx:id="liquidityPane" alignment="TOP_CENTER" prefHeight="454.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="swap.gui.controller.pages.LiquidityController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" />
+    </columnConstraints>
+    <children>
+        <VBox alignment="TOP_CENTER" GridPane.vgrow="ALWAYS">
+            <children>
+                <VBox fx:id="asbBox" alignment="TOP_CENTER" managed="false" spacing="8.0" visible="false" VBox.vgrow="ALWAYS">
+                    <children>
+                        <!-- Status strip: liveness + identity at a glance -->
+                        <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-padding: 6 12 6 12;" styleClass="app-card">
+                            <children>
+                                <Circle fx:id="statusDot" fill="#be7327" radius="4.0" />
+                                <Label fx:id="statusText" text="Starting..." textFill="#e7eaf0">
+                                    <font>
+                                        <Font name="Arial Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label text="•" textFill="#4d5259">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="rendezvousText" text="Rendezvous: —" textFill="#9aa0a6">
+                                    <font>
+                                        <Font name="Arial" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label text="•" textFill="#4d5259">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="swapsInProgressText" text="Swaps in progress: 0" textFill="#9aa0a6">
+                                    <font>
+                                        <Font name="Arial" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label text="PEER ID" textFill="#5c6066">
+                                    <font>
+                                        <Font name="Arial Bold" size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="peerIdShort" text="—" textFill="#8a8f96">
+                                    <font>
+                                        <Font name="Menlo" size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+
+                        <!-- Live maker swaps: temporarily hidden because it breaks the page layout. -->
+                        <HBox alignment="CENTER_LEFT" spacing="8.0" managed="false" visible="false" style="-fx-padding: 6 12 6 12;" styleClass="app-card">
+                            <children>
+                                <Circle fx:id="liveSwapDot" fill="#4d5259" radius="4.0" />
+                                <Label text="LIVE SWAPS" textFill="#9aa0a6">
+                                    <font>
+                                        <Font name="Arial Bold" size="10.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="liveSwapText" text="No swaps in progress" textFill="#e7eaf0">
+                                    <font>
+                                        <Font name="Arial Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="liveSwapCount" text="0" textFill="#9aa0a6">
+                                    <font>
+                                        <Font name="Menlo" size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+
+                        <!-- Row 1: balances + market (fixed 50/50 columns, same grid as row 2) -->
+                        <GridPane alignment="TOP_LEFT" hgap="10.0" VBox.vgrow="ALWAYS">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50.0" />
+                                <ColumnConstraints percentWidth="50.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints vgrow="ALWAYS" />
+                            </rowConstraints>
+                            <children>
+                                <VBox GridPane.columnIndex="0" spacing="10.0" styleClass="app-card">
+                                    <children>
+                                        <Label styleClass="app-card-title" text="Balances" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 0 0 18 0;" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <VBox alignment="CENTER_LEFT" spacing="6.0" HBox.hgrow="ALWAYS" maxHeight="110.0" prefHeight="110.0" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #8f1a14; -fx-border-radius: 4; -fx-padding: 12 16 12 16;">
+                                                    <children>
+                                                        <Label fx:id="unlockedXmr" text="—" textFill="#e7eaf0">
+                                                            <font>
+                                                                <Font name="Menlo" size="28.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <HBox alignment="BASELINE_LEFT" spacing="6.0">
+                                                            <children>
+                                                                <Label text="XMR AVAILABLE" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <Region HBox.hgrow="ALWAYS" />
+                                                                <Label fx:id="unlockedBtcEquiv" text="≈ — BTC" textFill="#8a8f96">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="BASELINE_LEFT" spacing="6.0" style="-fx-border-color: #262626 transparent transparent transparent; -fx-border-width: 1 0 0 0; -fx-padding: 6 0 0 0;">
+                                                            <children>
+                                                                <Label text="XMR SOLD (ALL TIME)" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <Region HBox.hgrow="ALWAYS" />
+                                                                <Label fx:id="activitySold" text="—" textFill="#e7eaf0">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="13.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="CENTER_LEFT" spacing="6.0" HBox.hgrow="ALWAYS" maxHeight="110.0" prefHeight="110.0" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #8f1a14; -fx-border-radius: 4; -fx-padding: 12 16 12 16;">
+                                                    <children>
+                                                        <Label fx:id="btcBalanceLarge" text="—" textFill="#e7eaf0">
+                                                            <font>
+                                                                <Font name="Menlo" size="28.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <HBox alignment="BASELINE_LEFT" spacing="6.0">
+                                                            <children>
+                                                                <Label text="BTC AVAILABLE" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <Region HBox.hgrow="ALWAYS" />
+                                                                <Label fx:id="btcXmrEquiv" text="≈ — XMR" textFill="#8a8f96">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="BASELINE_LEFT" spacing="6.0" style="-fx-border-color: #262626 transparent transparent transparent; -fx-border-width: 1 0 0 0; -fx-padding: 6 0 0 0;">
+                                                            <children>
+                                                                <Label text="BTC EARNED (ALL TIME)" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <Region HBox.hgrow="ALWAYS" />
+                                                                <Label fx:id="activityEarned" text="—" textFill="#e7eaf0">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="13.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox GridPane.columnIndex="1" spacing="8.0" styleClass="app-card">
+                                    <children>
+                                        <Label styleClass="app-card-title" text="Market" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <VBox spacing="1.0">
+                                            <children>
+                                                <Label fx:id="spotXmrPrice" text="—" textFill="#e7eaf0">
+                                                    <font>
+                                                        <Font name="Menlo" size="24.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label text="SPOT XMR/BTC" textFill="#9aa0a6">
+                                                    <font>
+                                                        <Font name="Arial Bold" size="10.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                        </VBox>
+                                        <HBox spacing="6.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="190.0" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 5 8 5 8;">
+                                                    <children>
+                                                        <VBox spacing="1.0">
+                                                            <children>
+                                                                <Label text="YOUR RATE" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <TextField fx:id="asbPrice" editable="false" focusTraversable="false" prefColumnCount="16" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-padding: 0; -fx-text-fill: #e7eaf0;">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="12.0" />
+                                                                    </font>
+                                                                </TextField>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="190.0" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 5 8 5 8;">
+                                                    <children>
+                                                        <VBox spacing="1.0">
+                                                            <children>
+                                                                <Label text="FEE" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <Label fx:id="feeChip" text="—" textFill="#e7eaf0">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </HBox>
+                                        <HBox spacing="6.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="190.0" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 5 8 5 8;">
+                                                    <children>
+                                                        <VBox spacing="1.0">
+                                                            <children>
+                                                                <Label text="MIN BTC" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <TextField fx:id="minBtc" editable="false" focusTraversable="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-text-fill: #e7eaf0;">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="12.0" />
+                                                                    </font>
+                                                                </TextField>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="190.0" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 5 8 5 8;">
+                                                    <children>
+                                                        <VBox spacing="1.0">
+                                                            <children>
+                                                                <Label text="MAX BTC" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <TextField fx:id="maxBtc" editable="false" focusTraversable="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-text-fill: #e7eaf0;">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="12.0" />
+                                                                    </font>
+                                                                </TextField>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </GridPane>
+
+                        <!-- Row 2: liquidity donut + identity (fixed 50/50 columns) -->
+                        <GridPane alignment="TOP_LEFT" hgap="10.0" VBox.vgrow="ALWAYS">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50.0" />
+                                <ColumnConstraints percentWidth="50.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints vgrow="ALWAYS" />
+                            </rowConstraints>
+                            <children>
+                                <VBox GridPane.columnIndex="0" spacing="8.0" styleClass="app-card">
+                                    <children>
+                                        <Label styleClass="app-card-title" text="Liquidity" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER" spacing="14.0" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <StackPane maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <PieChart fx:id="liquidityDonut" animated="false" labelsVisible="false" legendVisible="false" minHeight="90.0" minWidth="90.0" maxHeight="180.0" maxWidth="180.0" prefHeight="150.0" prefWidth="150.0" startAngle="90.0" />
+                                                        <Circle fill="#141414" radius="38.0" mouseTransparent="true" />
+                                                        <VBox alignment="CENTER" spacing="0.0" mouseTransparent="true">
+                                                            <children>
+                                                                <Label fx:id="xmrBalanceLarge" text="—" textFill="#e7eaf0">
+                                                                    <font>
+                                                                        <Font name="Menlo" size="13.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <Label text="TOTAL XMR" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="11.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </StackPane>
+                                                <VBox alignment="CENTER" maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <VBox alignment="CENTER_LEFT" maxWidth="250.0" prefWidth="250.0" spacing="10.0">
+                                                            <children>
+                                                                <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                                                    <children>
+                                                                        <Circle fill="#8f1a14" radius="4.5" />
+                                                                        <Label text="Available" textFill="#9aa0a6">
+                                                                            <font>
+                                                                                <Font name="Arial" size="16.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Region HBox.hgrow="ALWAYS" />
+                                                                        <Label fx:id="availableXmrLabel" text="—" textFill="#e7eaf0">
+                                                                            <font>
+                                                                                <Font name="Menlo" size="16.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                    </children>
+                                                                </HBox>
+                                                                <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                                                    <children>
+                                                                        <Circle fill="#e89595" radius="4.5" />
+                                                                        <Label text="Reserved" textFill="#9aa0a6">
+                                                                            <font>
+                                                                                <Font name="Arial" size="16.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Region HBox.hgrow="ALWAYS" />
+                                                                        <Label fx:id="reservedXmrLabel" text="—" textFill="#e7eaf0">
+                                                                            <font>
+                                                                                <Font name="Menlo" size="16.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                    </children>
+                                                                </HBox>
+                                                                <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                                                    <children>
+                                                                        <Circle fill="#8a8f96" radius="4.5" />
+                                                                        <Label text="Locked" textFill="#9aa0a6">
+                                                                            <font>
+                                                                                <Font name="Arial" size="16.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Region HBox.hgrow="ALWAYS" />
+                                                                        <Label fx:id="lockedXmr" text="—" textFill="#e7eaf0">
+                                                                            <font>
+                                                                                <Font name="Menlo" size="16.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                    </children>
+                                                                </HBox>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                        <VBox spacing="6.0" style="-fx-padding: 8 0 0 0; -fx-border-color: #2a2a2a transparent transparent transparent; -fx-border-width: 1 0 0 0;">
+                                            <children>
+                                                <Label text="IN PROGRESS" textFill="#9aa0a6">
+                                                    <font>
+                                                        <Font name="Arial Bold" size="11.0" />
+                                                    </font>
+                                                </Label>
+                                                <VBox fx:id="inProgressList" spacing="4.0" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox GridPane.columnIndex="1" spacing="12.0" styleClass="app-card">
+                                    <children>
+                                        <Label styleClass="app-card-title" text="Seller Identity" textFill="#c0201a">
+                                            <font>
+                                                <Font name="Arial Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER" spacing="16.0" style="-fx-padding: 0 12 36 12;" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <VBox maxHeight="-Infinity" spacing="24.0" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <VBox spacing="6.0">
+                                                            <children>
+                                                                <Label text="MULTIADDR" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <HBox spacing="6.0">
+                                                                    <children>
+                                                                        <TextField fx:id="externalAddress" editable="false" focusTraversable="false" HBox.hgrow="ALWAYS" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 6 8 6 8; -fx-text-fill: #e7eaf0;">
+                                                                            <font>
+                                                                                <Font name="Menlo" size="11.0" />
+                                                                            </font>
+                                                                        </TextField>
+                                                                        <Button fx:id="copyMultiaddrButton" focusTraversable="false" mnemonicParsing="false" onAction="#onCopyMultiaddr" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 4 8 4 8;">
+                                                                            <graphic>
+                                                                                <FontAwesomeIconView fill="#9aa0a6" glyphName="COPY" size="11" />
+                                                                            </graphic>
+                                                                        </Button>
+                                                                    </children>
+                                                                </HBox>
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="6.0">
+                                                            <children>
+                                                                <Label text="XMR ADDRESS" textFill="#9aa0a6">
+                                                                    <font>
+                                                                        <Font name="Arial Bold" size="10.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <HBox spacing="6.0">
+                                                                    <children>
+                                                                        <TextField fx:id="xmrAddress" editable="false" focusTraversable="false" HBox.hgrow="ALWAYS" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 6 8 6 8; -fx-text-fill: #e7eaf0;">
+                                                                            <font>
+                                                                                <Font name="Menlo" size="11.0" />
+                                                                            </font>
+                                                                        </TextField>
+                                                                        <Button fx:id="copyXmrAddressButton" focusTraversable="false" mnemonicParsing="false" onAction="#onCopyXmrAddress" style="-fx-background-color: #171717; -fx-background-radius: 4; -fx-border-color: #262626; -fx-border-radius: 4; -fx-padding: 4 8 4 8;">
+                                                                            <graphic>
+                                                                                <FontAwesomeIconView fill="#9aa0a6" glyphName="COPY" size="11" />
+                                                                            </graphic>
+                                                                        </Button>
+                                                                    </children>
+                                                                </HBox>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </VBox>
+                                                <ImageView fx:id="xmrQR" fitHeight="135.0" fitWidth="135.0" preserveRatio="true" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </GridPane>
+
+                        <!-- Activity strip: glanceable counts (tables + status pies stay on History) -->
+                        <HBox alignment="CENTER_LEFT" spacing="16.0" style="-fx-padding: 6 12 6 12;" styleClass="app-card">
+                            <children>
+                                <Label text="ASB Activity" textFill="#c0201a">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <Label text="•" textFill="#4d5259">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                        <Label text="TOTAL" textFill="#9aa0a6">
+                                            <font>
+                                                <Font name="Arial Bold" size="10.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="activityTotal" text="—" textFill="#e7eaf0">
+                                            <font>
+                                                <Font name="Menlo" size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                        <Label text="COMPLETED" textFill="#9aa0a6">
+                                            <font>
+                                                <Font name="Arial Bold" size="10.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="activityCompleted" text="—" textFill="#e7eaf0">
+                                            <font>
+                                                <Font name="Menlo" size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                        <Label text="ACTIVE" textFill="#9aa0a6">
+                                            <font>
+                                                <Font name="Arial Bold" size="10.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="activityActive" text="—" textFill="#e7eaf0">
+                                            <font>
+                                                <Font name="Menlo" size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                        <Label text="SUCCESS" textFill="#9aa0a6">
+                                            <font>
+                                                <Font name="Arial Bold" size="10.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="activitySuccess" text="—" textFill="#e7eaf0">
+                                            <font>
+                                                <Font name="Menlo" size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <VBox fx:id="progressBox" alignment="CENTER" spacing="14.0" managed="false" visible="false" VBox.vgrow="ALWAYS">
+                    <ProgressIndicator fx:id="progressIndicator" maxHeight="88.0" maxWidth="88.0" prefHeight="88.0" prefWidth="88.0" progress="-1.0" />
+                    <Label fx:id="startupStatus" textFill="#919191" wrapText="true" textAlignment="CENTER" alignment="CENTER" maxWidth="460.0" />
+                </VBox>
+                <VBox fx:id="offlineBox" alignment="CENTER" managed="false" spacing="10.0" visible="false" VBox.vgrow="ALWAYS">
+                    <Label alignment="CENTER" text="Automated Swap Backend (ASB) is not running" textAlignment="CENTER" textFill="WHITE">
+                        <font>
+                            <Font name="Arial Bold" size="32.0" />
+                        </font>
+                    </Label>
+                    <Label alignment="CENTER" text="Start it here, or tick “Start selling Monero” on the unlock screen. It sells your Monero to buyers as a market maker." textAlignment="CENTER" textFill="#9aa0a6" wrapText="true">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                            <Insets left="120.0" right="120.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Button fx:id="startAsbButton" onAction="#onStartAsbClick" text="Start ASB" styleClass="dialog-button-danger" />
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</GridPane>

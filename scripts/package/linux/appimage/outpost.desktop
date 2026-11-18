@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Outpost
+Comment=Tor-only BTC/XMR atomic swaps
+Exec=AppRun
+Icon=outpost
+Terminal=false
+Categories=Network;Finance;

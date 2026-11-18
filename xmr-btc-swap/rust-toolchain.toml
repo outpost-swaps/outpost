@@ -1,0 +1,4 @@
+[toolchain]
+channel = "1.99.0" # pinned by the Outpost fork; upstream said "1.70"
+components = ["clippy"]
+targets = ["armv7-unknown-linux-gnueabihf"]

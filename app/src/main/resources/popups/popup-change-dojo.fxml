@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="780.0" prefWidth="660.0" spacing="14.0" styleClass="import-dialog" style="-fx-background-color: #0e0e0e;"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="swap.gui.controller.popups.PopupChangeDojo">
+    <padding>
+        <Insets bottom="22.0" left="28.0" right="28.0" top="22.0" />
+    </padding>
+    <children>
+        <VBox spacing="4.0">
+            <children>
+                <Label text="Change Dojo" textFill="#c0201a">
+                    <font>
+                        <Font name="Arial Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label text="Your balances and fee estimates come from a Dojo server. The new one is used after the next start of the app." styleClass="import-hint" wrapText="true" />
+            </children>
+        </VBox>
+
+        <VBox spacing="6.0" styleClass="app-card">
+            <children>
+                <Label text="CURRENT DOJO" styleClass="dialog-section-title" />
+                <Label fx:id="currentDojo" styleClass="import-mono-small" wrapText="true" />
+            </children>
+        </VBox>
+
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="dialog-scroll" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox spacing="12.0">
+                    <padding>
+                        <Insets right="8.0" />
+                    </padding>
+                    <children>
+                        <VBox fx:id="publicCard" spacing="10.0" styleClass="option-card">
+                            <children>
+                                <RadioButton fx:id="publicMode" text="A public Dojo" selected="true">
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="source" />
+                                    </toggleGroup>
+                                </RadioButton>
+                                <Label text="Run by volunteers. A Dojo sees every address in your wallet, so prefer your own or one you trust." styleClass="import-hint" wrapText="true" />
+                                <VBox fx:id="publicInputs" spacing="8.0">
+                                    <children>
+                                        <ComboBox fx:id="dojoChoice" promptText="Choose a public Dojo..." maxWidth="1.7976931348623157E308" />
+                                        <Label fx:id="listStatus" styleClass="import-hint" wrapText="true" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                        <VBox fx:id="ownCard" spacing="10.0" styleClass="option-card">
+                            <children>
+                                <RadioButton fx:id="ownMode" text="My own Dojo" toggleGroup="$source" />
+                                <Label text="Paste its pairing JSON, or enter the URL and API key." styleClass="import-hint" wrapText="true" />
+                                <VBox fx:id="ownInputs" spacing="8.0" managed="false" visible="false">
+                                    <children>
+                                        <TextArea fx:id="dojoJson" prefRowCount="2" wrapText="true" promptText="Dojo pairing JSON" />
+                                        <Label text="or" styleClass="import-hint" maxWidth="1.7976931348623157E308" alignment="CENTER" />
+                                        <TextField fx:id="dojoUrl" promptText="Dojo URL (http://...onion/...)" />
+                                        <PasswordField fx:id="dojoKey" promptText="Dojo API key" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                        <VBox fx:id="payloadCard" spacing="10.0" styleClass="option-card">
+                            <children>
+                                <RadioButton fx:id="payloadMode" text="An Ashigaru pairing payload" toggleGroup="$source" />
+                                <Label text="From Ashigaru's Pair to Swaps GUI, on versions that still have it. Only its Dojo is used; the wallet stays as it is." styleClass="import-hint" wrapText="true" />
+                                <VBox fx:id="payloadInputs" spacing="8.0" managed="false" visible="false">
+                                    <children>
+                                        <TextArea fx:id="payloadText" prefRowCount="2" wrapText="true" promptText="Paste the pairing payload" />
+                                        <PasswordField fx:id="payloadPass" promptText="Passphrase of that wallet" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="8.0" styleClass="app-card">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                    <children>
+                                        <Button fx:id="testButton" onAction="#onTest" text="Test connection" styleClass="dialog-button-secondary" disable="true" />
+                                        <Label fx:id="testResult" styleClass="import-hint" wrapText="true" HBox.hgrow="ALWAYS" />
+                                    </children>
+                                </HBox>
+                                <PasswordField fx:id="walletPassphrase" promptText="Your wallet passphrase (needed to save)" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <children>
+                <Label fx:id="messageLabel" wrapText="true" styleClass="import-hint" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+                <Button onAction="#onCancel" text="Cancel" styleClass="dialog-button-secondary" cancelButton="true" />
+                <Button fx:id="saveButton" onAction="#onSave" text="Save" styleClass="dialog-button-danger" disable="true" defaultButton="true" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

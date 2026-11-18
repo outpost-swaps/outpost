@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "\n           SELECT swap_id, state\n           FROM swap_states\n           WHERE id IN (\n               SELECT max(id)\n               FROM swap_states\n               GROUP BY swap_id\n           )\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "swap_id",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "state",
+        "ordinal": 1,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "08b75bfc3572c1933e152c465093bda307c467a7574d91a594716ca4f85b155c"
+}

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Starts Outpost from inside the AppImage (the AppImage runtime sets APPDIR; fall back to this file's folder).
+HERE="$(dirname "$(readlink -f "$0")")"
+exec "${APPDIR:-$HERE}/Outpost/bin/Outpost" "$@"

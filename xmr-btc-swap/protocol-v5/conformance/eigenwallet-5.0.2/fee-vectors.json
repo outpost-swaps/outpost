@@ -1,0 +1,1576 @@
+{
+  "address": "tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx (redeem, refund, punish)",
+  "fees": [
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 300
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 375
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 362
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 453
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 300
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 375
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 362
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 453
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 300
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 375
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 362
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 453
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 300
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 150,
+        "max_vsize": 150,
+        "redeem": 375
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 362
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 1000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 181,
+        "max_vsize": 181,
+        "redeem": 453
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 600
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 750
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 724
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 905
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 600
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 750
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 724
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 905
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 600
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 750
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 724
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 905
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 600
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 300,
+        "max_vsize": 150,
+        "redeem": 750
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 724
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 2000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 362,
+        "max_vsize": 181,
+        "redeem": 905
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 900
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 1125
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1086
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1358
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 900
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 1125
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1086
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1358
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 900
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 1125
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1086
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1358
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 900
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 450,
+        "max_vsize": 150,
+        "redeem": 1125
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1086
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 3000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 543,
+        "max_vsize": 181,
+        "redeem": 1358
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 1840
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 2300
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2220
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2775
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 1840
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 2300
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2220
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2775
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 1840
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 2300
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2220
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2775
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 1840
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 920,
+        "max_vsize": 150,
+        "redeem": 2300
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2220
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 6132,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1110,
+        "max_vsize": 181,
+        "redeem": 2775
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3000
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3750
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 3620
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 4525
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3000
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3750
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 3620
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 4525
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3000
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3750
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 3620
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 4525
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3000
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1500,
+        "max_vsize": 150,
+        "redeem": 3750
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 3620
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 10000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 1810,
+        "max_vsize": 181,
+        "redeem": 4525
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 7500
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 9375
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 9050
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 11313
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 7500
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 9375
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 9050
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 11313
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 7500
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 9375
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 9050
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 11313
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 7500
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 3750,
+        "max_vsize": 150,
+        "redeem": 9375
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 9050
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 25000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 4525,
+        "max_vsize": 181,
+        "redeem": 11313
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 15000
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 18750
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "error": "Swap spending path fees (0.00036200 BTC) exceed local budget (0.00033333 BTC)"
+      }
+    },
+    {
+      "amount": 100000,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "error": "Swap spending path fees (0.00036200 BTC) exceed local budget (0.00033333 BTC)"
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 15000
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 18750
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 9050,
+        "max_vsize": 181,
+        "redeem": 18100
+      }
+    },
+    {
+      "amount": 809500,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 9050,
+        "max_vsize": 181,
+        "redeem": 22625
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 15000
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 18750
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 9050,
+        "max_vsize": 181,
+        "redeem": 18100
+      }
+    },
+    {
+      "amount": 1500000,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 9050,
+        "max_vsize": 181,
+        "redeem": 22625
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 15000
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 0,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 7500,
+        "max_vsize": 150,
+        "redeem": 18750
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 200,
+      "result": {
+        "base": 9050,
+        "max_vsize": 181,
+        "redeem": 18100
+      }
+    },
+    {
+      "amount": 10000000,
+      "deposit_percent": 10,
+      "rate": 50000,
+      "redeem_multiplier": 250,
+      "result": {
+        "base": 9050,
+        "max_vsize": 181,
+        "redeem": 22625
+      }
+    }
+  ],
+  "keys": "a = scalar [7; 32], b = scalar [9; 32]",
+  "limits": [
+    {
+      "amount": 100000,
+      "max_path_fee": 33333,
+      "max_rate": 3000,
+      "min_rate": 1000,
+      "rate": 1000
+    },
+    {
+      "amount": 809500,
+      "max_path_fee": 100000,
+      "max_rate": 3000,
+      "min_rate": 1000,
+      "rate": 1000
+    },
+    {
+      "amount": 1500000,
+      "max_path_fee": 100000,
+      "max_rate": 3000,
+      "min_rate": 1000,
+      "rate": 1000
+    },
+    {
+      "amount": 10000000,
+      "max_path_fee": 100000,
+      "max_rate": 3000,
+      "min_rate": 1000,
+      "rate": 1000
+    },
+    {
+      "amount": 100000,
+      "max_path_fee": 33333,
+      "max_rate": 6000,
+      "min_rate": 1000,
+      "rate": 2000
+    },
+    {
+      "amount": 809500,
+      "max_path_fee": 100000,
+      "max_rate": 6000,
+      "min_rate": 1000,
+      "rate": 2000
+    },
+    {
+      "amount": 1500000,
+      "max_path_fee": 100000,
+      "max_rate": 6000,
+      "min_rate": 1000,
+      "rate": 2000
+    },
+    {
+      "amount": 10000000,
+      "max_path_fee": 100000,
+      "max_rate": 6000,
+      "min_rate": 1000,
+      "rate": 2000
+    },
+    {
+      "amount": 100000,
+      "max_path_fee": 33333,
+      "max_rate": 9000,
+      "min_rate": 1500,
+      "rate": 3000
+    },
+    {
+      "amount": 809500,
+      "max_path_fee": 100000,
+      "max_rate": 9000,
+      "min_rate": 1500,
+      "rate": 3000
+    },
+    {
+      "amount": 1500000,
+      "max_path_fee": 100000,
+      "max_rate": 9000,
+      "min_rate": 1500,
+      "rate": 3000
+    },
+    {
+      "amount": 10000000,
+      "max_path_fee": 100000,
+      "max_rate": 9000,
+      "min_rate": 1500,
+      "rate": 3000
+    },
+    {
+      "amount": 100000,
+      "max_path_fee": 33333,
+      "max_rate": 18396,
+      "min_rate": 3066,
+      "rate": 6132
+    },
+    {
+      "amount": 809500,
+      "max_path_fee": 100000,
+      "max_rate": 18396,
+      "min_rate": 3066,
+      "rate": 6132
+    },
+    {
+      "amount": 1500000,
+      "max_path_fee": 100000,
+      "max_rate": 18396,
+      "min_rate": 3066,
+      "rate": 6132
+    },
+    {
+      "amount": 10000000,
+      "max_path_fee": 100000,
+      "max_rate": 18396,
+      "min_rate": 3066,
+      "rate": 6132
+    },
+    {
+      "amount": 100000,
+      "max_path_fee": 33333,
+      "max_rate": 30000,
+      "min_rate": 5000,
+      "rate": 10000
+    },
+    {
+      "amount": 809500,
+      "max_path_fee": 100000,
+      "max_rate": 30000,
+      "min_rate": 5000,
+      "rate": 10000
+    },
+    {
+      "amount": 1500000,
+      "max_path_fee": 100000,
+      "max_rate": 30000,
+      "min_rate": 5000,
+      "rate": 10000
+    },
+    {
+      "amount": 10000000,
+      "max_path_fee": 100000,
+      "max_rate": 30000,
+      "min_rate": 5000,
+      "rate": 10000
+    },
+    {
+      "amount": 100000,
+      "max_path_fee": 33333,
+      "max_rate": 75000,
+      "min_rate": 12500,
+      "rate": 25000
+    },
+    {
+      "amount": 809500,
+      "max_path_fee": 100000,
+      "max_rate": 75000,
+      "min_rate": 12500,
+      "rate": 25000
+    },
+    {
+      "amount": 1500000,
+      "max_path_fee": 100000,
+      "max_rate": 75000,
+      "min_rate": 12500,
+      "rate": 25000
+    },
+    {
+      "amount": 10000000,
+      "max_path_fee": 100000,
+      "max_rate": 75000,
+      "min_rate": 12500,
+      "rate": 25000
+    },
+    {
+      "amount": 100000,
+      "max_path_fee": 33333,
+      "max_rate": 150000,
+      "min_rate": 25000,
+      "rate": 50000
+    },
+    {
+      "amount": 809500,
+      "max_path_fee": 100000,
+      "max_rate": 150000,
+      "min_rate": 25000,
+      "rate": 50000
+    },
+    {
+      "amount": 1500000,
+      "max_path_fee": 100000,
+      "max_rate": 150000,
+      "min_rate": 25000,
+      "rate": 50000
+    },
+    {
+      "amount": 10000000,
+      "max_path_fee": 100000,
+      "max_rate": 150000,
+      "min_rate": 25000,
+      "rate": 50000
+    }
+  ],
+  "lock_floors": [
+    {
+      "amount": 100000,
+      "lock_floor": 500,
+      "rate": 1000
+    },
+    {
+      "amount": 809500,
+      "lock_floor": 500,
+      "rate": 1000
+    },
+    {
+      "amount": 1500000,
+      "lock_floor": 500,
+      "rate": 1000
+    },
+    {
+      "amount": 10000000,
+      "lock_floor": 500,
+      "rate": 1000
+    },
+    {
+      "amount": 100000,
+      "lock_floor": 500,
+      "rate": 2000
+    },
+    {
+      "amount": 809500,
+      "lock_floor": 500,
+      "rate": 2000
+    },
+    {
+      "amount": 1500000,
+      "lock_floor": 500,
+      "rate": 2000
+    },
+    {
+      "amount": 10000000,
+      "lock_floor": 500,
+      "rate": 2000
+    },
+    {
+      "amount": 100000,
+      "lock_floor": 500,
+      "rate": 3000
+    },
+    {
+      "amount": 809500,
+      "lock_floor": 500,
+      "rate": 3000
+    },
+    {
+      "amount": 1500000,
+      "lock_floor": 500,
+      "rate": 3000
+    },
+    {
+      "amount": 10000000,
+      "lock_floor": 500,
+      "rate": 3000
+    },
+    {
+      "amount": 100000,
+      "lock_floor": 500,
+      "rate": 6132
+    },
+    {
+      "amount": 809500,
+      "lock_floor": 500,
+      "rate": 6132
+    },
+    {
+      "amount": 1500000,
+      "lock_floor": 500,
+      "rate": 6132
+    },
+    {
+      "amount": 10000000,
+      "lock_floor": 500,
+      "rate": 6132
+    },
+    {
+      "amount": 100000,
+      "lock_floor": 606,
+      "rate": 10000
+    },
+    {
+      "amount": 809500,
+      "lock_floor": 606,
+      "rate": 10000
+    },
+    {
+      "amount": 1500000,
+      "lock_floor": 606,
+      "rate": 10000
+    },
+    {
+      "amount": 10000000,
+      "lock_floor": 606,
+      "rate": 10000
+    },
+    {
+      "amount": 100000,
+      "lock_floor": 1516,
+      "rate": 25000
+    },
+    {
+      "amount": 809500,
+      "lock_floor": 1516,
+      "rate": 25000
+    },
+    {
+      "amount": 1500000,
+      "lock_floor": 1516,
+      "rate": 25000
+    },
+    {
+      "amount": 10000000,
+      "lock_floor": 1516,
+      "rate": 25000
+    },
+    {
+      "amount": 100000,
+      "lock_floor": 3031,
+      "rate": 50000
+    },
+    {
+      "amount": 809500,
+      "lock_floor": 3031,
+      "rate": 50000
+    },
+    {
+      "amount": 1500000,
+      "lock_floor": 3031,
+      "rate": 50000
+    },
+    {
+      "amount": 10000000,
+      "lock_floor": 3031,
+      "rate": 50000
+    }
+  ],
+  "source": "eigenwallet/core cc1de7f3690b29605e14dd45b897347881050f2f (5.0.2)",
+  "tx_lock_weight": 485
+}
